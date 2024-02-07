@@ -1,0 +1,205 @@
+{% extends "agentpage.html" %}
+{% block title %}Update Worker{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4 mb-4">Update Worker</h1>
+    <form method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+        {% csrf_token %}
+        <label for="first_name">Name:</label>
+        <input type="text" id="first_name" name="first_name" value="{{ worker.first_name }}" required>
+        <span id="nameError" class="error"></span><br><br>
+    
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" value="{{ worker.dob|date:'Y-m-d' }}" required>
+        <span id="dobError" class="error"></span><br><br>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" value="{{ worker.gender }}" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select>
+        <span id="genderError" class="error"></span><br><br>
+
+        <label for="nationality">Nationality:</label>
+        <input type="text" id="nationality" name="nationality" value="{{ worker.nationality }}" required>
+        <span id="nationalityError" class="error"></span><br><br>
+    
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" required>{{ worker.address }}</textarea>
+        <span id="addressError" class="error"></span><br><br>
+    
+        <label for="contact_number">Contact Number:</label>
+        <input type="tel" id="contact_number" name="contact_number" value="{{ worker.contact_number }}" required>
+        <span id="contactError" class="error"></span><br><br>
+    
+        <label for="adhar_number">Adhar Number:</label>
+        <input type="text" id="adhar_number" name="adhar_number" value="{{ worker.adhar_number }}" required>
+        <span id="adharError" class="error"></span><br><br>
+
+        <label for="work_assign">Assign Work:</label>
+        <select id="work_assign" name="work_assign">
+            <option value="select_work" {% if not worker.category %}selected{% endif %}>Select Work</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if worker.category == category %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+        <span id="workAssignError" class="error"></span><br><br>
+
+        <label for="profile_image">Profile Image:</label>
+        <input type="file" id="profile_image" name="profile_image" accept="image/*" onchange="displayCurrentFile('profile_image', 'currentProfileImage')">
+        <span id="profileImageError" class="error"></span>
+        {% if worker.profile_image %}
+            <p id="currentProfileImage">Current Profile Image: {{ worker.profile_image.name }}</p>
+        {% else %}
+            <p id="currentProfileImage">No current profile image</p>
+        {% endif %}
+        <br><br>
+
+        <label for="document">Upload Document or Government ID:</label>
+        <input type="file" id="document" name="document" accept=".pdf, .doc, .docx, image/*" onchange="displayCurrentFile('document', 'currentDocument')">
+        <span id="documentError" class="error"></span>
+        {% if worker.document %}
+            <p id="currentDocument">Current Document: {{ worker.document.name }}</p>
+        {% else %}
+            <p id="currentDocument">No current document</p>
+        {% endif %}
+        <br><br>
+
+        
+
+    
+        <input type="submit" value="Update Worker">
+    </form>
+</div>
+
+<script>
+    function validateForm() {
+        const isNameValid = validateField("first_name", "nameError");
+        const isDobValid = validateField("dob", "dobError");
+        const isNationalityValid = validateField("nationality", "nationalityError");
+        const isAddressValid = validateField("address", "addressError");
+        const isContactNumberValid = validateField("contact_number", "contactError");
+        const isAdharNumberValid = validateField("adhar_number", "adharError");
+        const isWorkAssignValid = validateField("work_assign", "workAssignError");
+        const isProfileImageValid = validateFile("profile_image", "profileImageError");
+        const isDocumentValid = validateFile("document", "documentError");
+
+        return (
+            isNameValid &&
+            isDobValid &&
+            isNationalityValid &&
+            isAddressValid &&
+            isContactNumberValid &&
+            isAdharNumberValid &&
+            isWorkAssignValid &&
+            isProfileImageValid &&
+            isDocumentValid
+        );
+    }
+
+    function validateField(fieldId, errorId) {
+        const field = document.getElementById(fieldId);
+        const errorSpan = document.getElementById(errorId);
+
+        if (field.value.trim() === "") {
+            errorSpan.textContent = "This field is required";
+            field.classList.add("error-border");
+            return false;
+        } else {
+            errorSpan.textContent = "";
+            field.classList.remove("error-border");
+            return true;
+        }
+    }
+
+
+    
+        function displayCurrentFile(inputId, displayId) {
+            const fileInput = document.getElementById(inputId);
+            const displayElement = document.getElementById(displayId);
+
+            if (fileInput.files.length > 0) {
+                displayElement.textContent = `Current ${displayId.replace('current', '')}: ${fileInput.files[0].name}`;
+            } else {
+                displayElement.textContent = `No current ${displayId.replace('current', '').toLowerCase()}`;
+            }
+        }
+        
+</script>
+
+<style>
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Container Styles */
+    .container {
+        width: 80%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    /* Form Styles */
+    form {
+        width: 50%;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    select {
+        height: 35px;
+    }
+
+    input[type="submit"] {
+        background-color: #007BFF;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    .error-border {
+        border: 1px solid red;
+    }
+
+    .error {
+        color: red;
+    }
+</style>
+{% endblock %}

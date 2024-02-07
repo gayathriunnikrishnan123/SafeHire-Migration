@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Panel - SafeHire Migration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+ 
+    <div id="content-main" class="container-fluid">
+        <div class="row">
+          
+            <nav class="col-md-2 d-none d-md-block sidebar">
+                <h2 class="sidebar-heading">Employer Dashboard</h2>
+                
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/userpage">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/user_profile" id="profile-link">User Profile</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'worker_list' %}" id="worker-list-link">Workers List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/bookings" id="profile-link">My Bookings</a>
+                      </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout" id="logout-link">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4">
+                {% block content %}
+                <span style="font-size: 40px;">
+                  SafeHire Migration - Welcome! {{ user.username }}
+                </span>
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- jQuery (make sure it is loaded before Bootstrap.js) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Bootstrap dropdowns
+            $('.dropdown-toggle').dropdown();
+        });
+    </script>
+
+    <style>
+        /* Your existing CSS styles here */
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            background-color:  #333;
+            color: #fff;
+        }
+
+        .sidebar-heading {
+            padding: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .nav-link {
+            color: #fff;
+        }
+
+        .nav-link.active {
+            font-weight: bold;
+        }
+
+        main {
+            margin-top: 1.5rem;
+            margin-left: 16.25rem; /* Same as sidebar width */
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+        }
+
+        .table-responsive {
+            margin-top: 1rem;
+        }
+
+        /* Custom CSS for the "Total Users" stat box */
+        .stat-box {
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-box h2 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-box p {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007BFF; /* Custom color */
+        }
+    </style>
+
+</body>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Popper.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</html>

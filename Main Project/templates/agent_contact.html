@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Contact</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .agent-details {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .agent-details img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 50%;
+        }
+
+        .agent-details h2 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .agent-details p {
+            color: #777;
+        }
+
+        .chat-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .chat-box textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 10px;
+            resize: none;
+        }
+
+        .chat-box button {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Modal Styles */
+        #bookingModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .modal-content {
+            text-align: center;
+        }
+
+        .modal-content label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .modal-content input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .modal-content select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .modal-content button {
+            width: 100%;
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Agent Contact</h1>
+    </header>
+
+    <div class="container">
+        <div class="agent-details">
+            <h2>{{ agent.name }}</h2>
+            <p>Contact: {{ agent.phone }}</p>
+            <p>Email: {{ agent.email }}</p>
+        </div>
+
+        <div class="chat-box">
+            <h5>Sent request to Agent For booking Worker</h5>
+            <button id="sendMessageBtn">Sent Request</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="bookingModal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Book Worker</h2>
+            <form id="bookingForm" action="{% url 'book_worker' agent.id worker.id %}" method="post">
+
+                {% csrf_token %}
+                <label for="duration">Duration:</label>
+                <input type="number" name="duration" id="duration" required>
+
+                <label for="durationUnit">Duration Unit:</label>
+                <select name="durationUnit" id="durationUnit" required>
+                    <option value="days">Days</option>
+                    <option value="months">Months</option>
+                </select>
+
+
+                <button id="book" type="submit">Book Worker</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#sendMessageBtn').click(function() {
+                $('#bookingModal').css('display', 'block');
+            });
+
+            $('#closeModal').click(function() {
+                $('#bookingModal').css('display', 'none');
+            });
+        });
+    </script>
+</body>
+</html>

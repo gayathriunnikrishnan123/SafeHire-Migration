@@ -1,0 +1,85 @@
+{% extends "adminpanel.html" %}
+{% block title %}Worker{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-bottom: 10px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .document-link {
+            display: block;
+            margin-top: 10px;
+            text-decoration: underline;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Profile Verification</h1>
+        <p>Username: <span>{{ user.username }}</span></p>
+        <p>Email: <span>{{ user.email }}</span></p>
+        <p>Contact Number: <span>{{ user.phone }}</span></p>
+        <!-- Display other user information as needed -->
+
+        <div>
+            
+                {% if user.is_employer %}
+                Employer
+                {% endif %}
+                {% if user.is_agent %}
+                Agent
+                {% endif %}
+                {% if user.is_police %}
+                Police
+                {% endif %}
+         </div>
+         <div>
+            <h3>Document:</h3>
+            {% if user.uploaded_file %}
+                <li>
+                    <a href="{{ user.uploaded_file.url }}">View Document</a>
+                    <a href="{{ user.uploaded_file.url }}" download="{{ user.uploaded_file.name }}">Download</a>
+                </li>
+            {% endif %}
+        </div>
+        
+        
+
+        <div class="action-buttons">
+           
+            <form action="/verify_user/{{ user.id }}/" method="post">
+                {% csrf_token %}
+                <button class="btn btn-primary" type="submit">Verify</button>
+            </form>
+            <form action="/rejectuser/{{ user.id }}/" method="post">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Reject</button>
+            </form>
+            
+        </div>
+    </div>
+</body>
+</html>
+{% endblock content %}

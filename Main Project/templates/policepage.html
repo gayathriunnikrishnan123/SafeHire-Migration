@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <body>
+        <div id="content-main" class="container-fluid">
+            <div class="row">
+                <nav class="col-md-2 d-none d-md-block sidebar">
+                    <h2 class="sidebar-heading">Police Dashboard</h2>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/policepage">Dashboard</a>
+                        </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href=# id="profile-link">police Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/incidentreported" id="incident">Incident Reported</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/activeofficers" id="officer">Active Officers</a>
+                      </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/workerprofile" id="worker-list-link">Workers Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout" id="logout-link">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+  
+
+    <script src="script.js"></script>
+    {% block content %}
+    <span style="font-size: 40px;">
+        SafeHire Migration - Welcome! {{ user.username }}
+      </span>
+    {% endblock %}
+</body>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.sidebar {
+    height: 100vh;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    text-align: center;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.content {
+    width: 100%;
+}
+
+header {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.container {
+    padding: 20px;
+}
+
+section {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+</style>
+</html>

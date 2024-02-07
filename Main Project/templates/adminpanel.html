@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom CSS for the admin panel */
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            background-color: #343a40;
+            color: #fff;
+            width: 250px; /* Adjust the width as needed */
+        }
+
+        .sidebar-heading {
+            padding: 1rem;
+            font-size: 1.5rem; /* Increase the font size for the heading */
+        }
+
+        .nav-link {
+            color: #fff;
+            font-size: 1rem; /* Adjust the font size for links */
+        }
+
+        .nav-link.active {
+            font-weight: bold;
+            background-color: #007bff; /* Highlight the active link */
+        }
+
+        main {
+            margin-top: 1.5rem;
+            margin-left: 250px; /* Same as sidebar width */
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        h1 {
+            font-size: 2rem; /* Increase the font size for page titles */
+        }
+
+        h3 {
+            font-size: 1.5rem;
+        }
+
+        .table-responsive {
+            margin-top: 1rem;
+        }
+
+        /* Custom CSS for the "Total Users" stat box */
+        .stat-box {
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+        }
+
+        .stat-box h2 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-box p {
+            font-size: 2rem; /* Increase the font size for the statistic */
+            font-weight: bold;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <div id="content-main" class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block sidebar">
+                <h2 class="sidebar-heading">Admin Dashboard</h2>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/adminpanel">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/workcategory">Work Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                               
+    {% block content %}
+    <span style="font-size: 40px;">
+        SafeHire Migration - AdminPanel
+      </span>
+    {% endblock %}
+</body>
+</html>
