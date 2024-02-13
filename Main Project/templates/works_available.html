@@ -1,0 +1,152 @@
+{% extends "userpage.html" %}
+{% block title %}Worker{% endblock %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit a Job</title>
+    {% comment %} <link rel="stylesheet" href="styles.css"> {% endcomment %}
+</head>
+<body>
+    <div class="container">
+        <h2>Submit a Job</h2>
+        <form id="jobForm" method="POST" action="{% url 'works_available' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="jobTitle">Job Title:</label>
+                <select id="jobTitle" name="jobTitle">
+                    <option value="select_work">Select job</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="workType">Type of Work:</label>
+                <select id="workType" name="workType" required>
+                    <option value="">Select</option>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Contract">Contract</option>
+                    <option value="Freelance">Freelance</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="workLocation">Work Location:</label>
+                <input type="text" id="workLocation" name="workLocation" required>
+            </div>
+            <div class="form-group">
+                <label for="duration">Duration (in months):</label>
+                <input type="number" id="duration" name="duration" required>
+            </div>
+            <div class="form-group">
+                <label for="qualification">Qualification Required:</label>
+                <select id="qualification" name="qualification" required>
+                    <option value="">Select</option>
+                    <option value="High School">High School</option>
+                    <option value="Bachelor">Bachelor</option>
+                    <option value="Master">Master</option>
+                    <option value="PhD">PhD</option>
+                </select>
+            </div>
+            <button type="submit">Submit Job</button>
+        </form>
+    </div>
+
+    {% comment %} <script src="script.js"></script> {% endcomment %}
+</body>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+    
+    .container {
+        width: 50%;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    h2 {
+        text-align: center;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    label {
+        font-weight: bold;
+    }
+    
+    input[type="text"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+    
+    button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+    
+    button:hover {
+        background-color: #45a049;
+    }
+    
+</style>
+{% comment %} <script> {% endcomment %}
+    document.getElementById("jobForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent default form submission behavior
+    
+        // Get form data
+        const formData = new FormData(event.target);
+    
+        // Make AJAX request to submit form data
+        fetch("{% url 'works_available' %}", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error("Failed to submit form");
+            }
+        })
+        .then(data => {
+            // Handle successful form submission
+            console.log("Form submitted successfully:", data);
+            // You can optionally redirect to a success page here
+        })
+        .catch(error => {
+            // Handle errors
+            console.error("Error submitting form:", error);
+            // You can display an error message to the user here
+        });
+    
+        // Reset form fields (optional)
+        event.target.reset();
+    });
+    </script>
+    
+</html>
+{% endblock content %}

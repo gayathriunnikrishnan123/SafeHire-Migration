@@ -837,16 +837,73 @@ def generate_payment_receipt_pdf(request, booking_id):
 
 
 
-from rest_framework.generics import ListAPIView
+# from rest_framework.generics import ListAPIView
 
 
-class WorkerListView(ListAPIView):
-    queryset = MigratoryWorker.objects.all()
-    template_name = 'worker_list.html'
+# class WorkerListView(ListAPIView):
+#     queryset = MigratoryWorker.objects.all()
+#     template_name = 'worker_list.html'
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-       
+#     def list(self, request, *args, **kwargs):
+#         queryset = self.get_queryset()
+
+
+
+
+
+from django.shortcuts import render, redirect
+from .models import JobSubmission, WorkCategory
+
+def works_available(request):
+    if request.method == 'POST':
+        # Extract form data
+        work_type1= request.POST.get('workType')
+        work_location1= request.POST.get('workLocation')
+        duration1= request.POST.get('duration')
+        qualification_required1= request.POST.get('qualification')
+        description1= request.POST.get('jobTitle')
+        # Assuming agent and employer are available in the request context
+        agent1= request.user  # or however you retrieve the agent
+        employer1= request.user  # or however you retrieve the employer
+        
+        # Check if job title is provided
+        if description1:
+            # Create and save JobSubmission instance
+            job_submission = JobSubmission.objects.create(
+                work_type=work_type1,
+                work_location=work_location1,
+                duration=duration1,
+                qualification_required=qualification_required1,
+                description=description1,
+                agent=agent1,
+                employer=employer1,
+            )
+            job_submission.save()
+            return redirect('success_page')  # Redirect to a success page
+        else:
+            # Handle case where job title is not provided
+            error_message = "Please provide a job title."
+            categories = WorkCategory.objects.all()
+            return render(request, 'works_available.html', {'categories': categories, 'error_message': error_message})
+            
+    else:
+        # Get all work categories
+        categories = WorkCategory.objects.all()
+        return render(request, 'works_available.html', {'categories': categories})
+
+
+from django.shortcuts import render
+from .models import JobSubmission
+
+def jobs(request):
+    # Fetch submitted jobs from the database
+    submitted_jobs = JobSubmission.objects.all()
+
+    context = {
+        'jobs': submitted_jobs,
+    }
+
+    return render(request, 'jobs.html', context)
 
  
 

@@ -179,3 +179,33 @@ class Payment(models.Model):
 
     def __str__(self):
         return f'Payment for Booking {self.booking}'
+    
+
+
+class JobSubmission(models.Model):
+    TYPE_CHOICES = [
+        ('Full-time', 'Full-time'),
+        ('Part-time', 'Part-time'),
+        ('Contract', 'Contract'),
+        ('Freelance', 'Freelance'),
+    ]
+
+    QUALIFICATION_CHOICES = [
+        ('High School', 'High School'),
+        ('Bachelor', 'Bachelor'),
+        ('Master', 'Master'),
+        ('PhD', 'PhD'),
+    ]
+
+    work_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    work_location = models.CharField(max_length=100)
+    duration = models.PositiveIntegerField(help_text='Duration in months')
+    qualification_required = models.CharField(max_length=20, choices=QUALIFICATION_CHOICES)
+    description = models.TextField()
+    agent = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='submitted_jobs_as_agent')
+    employer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='submitted_jobs_as_employer')
+
+
+    def __str__(self):
+        return f"Job Submission - {self.id}"
+

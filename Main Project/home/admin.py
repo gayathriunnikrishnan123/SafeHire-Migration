@@ -9,4 +9,5 @@ admin.site.register(WorkCategory)
 admin.site.register(Police)
 admin.site.register(BookingWorker)
 admin.site.register(Payment)
+admin.site.register(JobSubmission)
 

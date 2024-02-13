@@ -4,7 +4,7 @@ from django.contrib.auth import views as auth_views
 from home.views import delete_user
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import WorkerListView
+# from .views import WorkerListView
 from .views import generate_work_permit_pdf
 
 
@@ -20,7 +20,7 @@ urlpatterns = [
     path('user_profile/', views.user_profile, name='user_profile'),
     path('agent_profile/', views.agent_profile, name='agent_profile'),
     path('worker_list/', views.worker_list, name='worker_list'),
-    path('workers/', WorkerListView.as_view(), name='worker-list'),
+    # path('workers/', WorkerListView.as_view(), name='worker-list'),
     path('agentpage/', views.agentpage,name="agentpage"),
     path('addworker/', views.addworker,name="addworker"),
     path('viewworker/', views.viewworker,name="viewworker"),
@@ -57,6 +57,8 @@ urlpatterns = [
     path('bookings/', views.bookings, name='bookings'),
     path('handle-payment/', views.handle_payment, name='handle_payment'),
     path('generate_payment_receipt_pdf/<int:booking_id>/', views.generate_payment_receipt_pdf, name='generate_payment_receipt_pdf'),
+    path('works_available/', views.works_available, name='works_available'),
+    path('submitted-jobs/', views.jobs, name='jobs'),
 
 ]
 

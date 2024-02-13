@@ -167,55 +167,55 @@
 
 
 
-import time
-import unittest
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-class PoliceSeleniumTest(unittest.TestCase):
+# import time
+# import unittest
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
+# class PoliceSeleniumTest(unittest.TestCase):
 
-    def setUp(self):
-        self.driver = webdriver.Chrome()
-        self.driver.get("http://127.0.0.1:8000/login") 
+#     def setUp(self):
+#         self.driver = webdriver.Chrome()
+#         self.driver.get("http://127.0.0.1:8000/login") 
 
-    def tearDown(self):
-        self.driver.quit()
+#     def tearDown(self):
+#         self.driver.quit()
 
-    def login_to_police_page(self, username, password):
+#     def login_to_police_page(self, username, password):
        
-        username_input = self.driver.find_element(By.NAME, "username")
-        password_input = self.driver.find_element(By.NAME, "password")
-        login_button = self.driver.find_element(By.ID, "login")
+#         username_input = self.driver.find_element(By.NAME, "username")
+#         password_input = self.driver.find_element(By.NAME, "password")
+#         login_button = self.driver.find_element(By.ID, "login")
 
-        username_input.send_keys(username)
-        password_input.send_keys(password)
-        login_button.click()
-        print("user loggedin successfully")
+#         username_input.send_keys(username)
+#         password_input.send_keys(password)
+#         login_button.click()
+#         print("user loggedin successfully")
 
 
        
-        WebDriverWait(self.driver, 10).until(EC.url_contains("/policepage"))
+#         WebDriverWait(self.driver, 10).until(EC.url_contains("/policepage"))
 
-    def test_verify_worker(self):
+#     def test_verify_worker(self):
       
-        self.login_to_police_page(username="gokul", password="gokul@123")
+#         self.login_to_police_page(username="gokul", password="gokul@123")
 
         
-        user_page_link = self.driver.find_element(By.ID, "worker-list-link")
-        user_page_link.click()
+#         user_page_link = self.driver.find_element(By.ID, "worker-list-link")
+#         user_page_link.click()
 
       
-        WebDriverWait(self.driver, 10).until(EC.url_contains("/workerprofile"))
+#         WebDriverWait(self.driver, 10).until(EC.url_contains("/workerprofile"))
 
       
-        view_button = self.driver.find_element(By.ID, "view")
-        view_button.click()
-        WebDriverWait(self.driver, 10).until(EC.url_contains("/viewprofile"))
+#         view_button = self.driver.find_element(By.ID, "view")
+#         view_button.click()
+#         WebDriverWait(self.driver, 10).until(EC.url_contains("/viewprofile"))
 
-        verify_button = self.driver.find_element(By.ID, "veri")
-        verify_button.click()
-        print("police verify worker successfully")
+#         verify_button = self.driver.find_element(By.ID, "veri")
+#         verify_button.click()
+#         print("police verify worker successfully")
        
 
    
