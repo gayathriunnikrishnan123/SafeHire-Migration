@@ -10,6 +10,8 @@
 </head>
 <body>
     <h1>Booking List</h1>
+    <a href="{% url 'jobs' %}">View Jobs</a> <!-- Link to the jobs page -->
+    <div class="job-list">
     <table border="1">
         <thead>
             <tr>
@@ -53,6 +55,7 @@
             {% endfor %}
         </tbody>
     </table>
+
 </body>
 
 <style>

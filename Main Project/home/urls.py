@@ -58,7 +58,7 @@ urlpatterns = [
     path('handle-payment/', views.handle_payment, name='handle_payment'),
     path('generate_payment_receipt_pdf/<int:booking_id>/', views.generate_payment_receipt_pdf, name='generate_payment_receipt_pdf'),
     path('works_available/', views.works_available, name='works_available'),
-    path('submitted-jobs/', views.jobs, name='jobs'),
+    path('jobs/', views.jobs, name='jobs'),
 
 ]
 

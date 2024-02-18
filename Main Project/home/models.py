@@ -181,6 +181,8 @@ class Payment(models.Model):
         return f'Payment for Booking {self.booking}'
     
 
+
+
 class JobSubmission(models.Model):
     TYPE_CHOICES = [
         ('Full-time', 'Full-time'),
@@ -196,14 +198,18 @@ class JobSubmission(models.Model):
         ('PhD', 'PhD'),
     ]
 
+    title = models.CharField(max_length=100,blank=True, null=True)  # Change to CharField to store category name
     work_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
     work_location = models.CharField(max_length=100)
     duration = models.PositiveIntegerField(help_text='Duration in months')
     qualification_required = models.CharField(max_length=20, choices=QUALIFICATION_CHOICES)
-    worker = models.ForeignKey(MigratoryWorker, on_delete=models.CASCADE, null=True)
-    employer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    employer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
+    
 
     def __str__(self):
-        return f"Job Submission - {self.id}"
+        return f"Job Submission - {self.title}"
+
+
+
 
 

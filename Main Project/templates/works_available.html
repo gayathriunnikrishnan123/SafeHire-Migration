@@ -20,7 +20,7 @@
                 <select id="jobTitle" name="jobTitle">
                     <option value="select_work">Select job</option>
                     {% for category in categories %}
-                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        <option value="{{ category.name }}">{{ category.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -113,40 +113,7 @@
     }
     
 </style>
-{% comment %} <script> {% endcomment %}
-    document.getElementById("jobForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent default form submission behavior
-    
-        // Get form data
-        const formData = new FormData(event.target);
-    
-        // Make AJAX request to submit form data
-        fetch("{% url 'works_available' %}", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error("Failed to submit form");
-            }
-        })
-        .then(data => {
-            // Handle successful form submission
-            console.log("Form submitted successfully:", data);
-            // You can optionally redirect to a success page here
-        })
-        .catch(error => {
-            // Handle errors
-            console.error("Error submitting form:", error);
-            // You can display an error message to the user here
-        });
-    
-        // Reset form fields (optional)
-        event.target.reset();
-    });
-    </script>
+
     
 </html>
 {% endblock content %}
