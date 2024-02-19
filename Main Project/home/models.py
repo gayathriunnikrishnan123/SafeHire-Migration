@@ -204,6 +204,7 @@ class JobSubmission(models.Model):
     duration = models.PositiveIntegerField(help_text='Duration in months')
     qualification_required = models.CharField(max_length=20, choices=QUALIFICATION_CHOICES)
     employer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
+    worker = models.ForeignKey(MigratoryWorker, on_delete=models.CASCADE,blank=True,null=True)
     
 
     def __str__(self):
@@ -214,16 +215,22 @@ class JobSubmission(models.Model):
 
 from django.db import models
 
-class UPIPayment(models.Model):
-    payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+class SalaryPayment(models.Model):
+    worker = models.ForeignKey(MigratoryWorker, on_delete=models.CASCADE,blank=True,null=True)
+    worker_account = models.CharField(max_length=100)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateField()
-    upi_id = models.CharField(max_length=100)
-    transaction_id = models.CharField(max_length=100)
+    card_holder_name = models.CharField(max_length=100)
+    card_number = models.CharField(max_length=16)
+    cvv = models.CharField(max_length=3)
     payment_status = models.CharField(max_length=20, choices=[
         ('Pending', 'Pending'),
         ('Completed', 'Completed'),
         ('Failed', 'Failed'),
     ])
+
+    def __str__(self):
+        return f"Payment for {self.worker} on {self.payment_date}"
 
 
 

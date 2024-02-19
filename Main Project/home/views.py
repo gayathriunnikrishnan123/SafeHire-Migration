@@ -897,30 +897,35 @@ def jobs(request):
 
  
 from django.shortcuts import render, redirect
-from .models import UPIPayment
+from .models import SalaryPayment
 
 def salary(request):
     if request.method == 'POST':
-        payment_amount = request.POST.get('paymentAmount')
+        worker_name = request.POST.get('name')
+        amount = request.POST.get('amount')
         payment_date = request.POST.get('paymentDate')
-        upi_id = request.POST.get('upiID')
-        transaction_id = request.POST.get('transactionID')
-        payment_status = request.POST.get('paymentStatus')
-        
-        # Save payment details to the database
-        upi_payment = UPIPayment.objects.create(
-            payment_amount=payment_amount,
+        card_holder_name = request.POST.get('card_name')
+        card_number = request.POST.get('card_no')
+        cvv = request.POST.get('cvv')
+        payment_status = 'Completed'  # Assume payment is successful by default
+
+        # Create SalaryPayment instance
+        salary_payment = SalaryPayment.objects.create(
+            worker_account=worker_name,  # Assuming 'worker_account' stores the worker name
+            amount=amount,
             payment_date=payment_date,
-            upi_id=upi_id,
-            transaction_id=transaction_id,
+            card_holder_name=card_holder_name,
+            card_number=card_number,
+            cvv=cvv,
             payment_status=payment_status
         )
-        upi_payment.save()
-        
-        return redirect('payment_success')  # Redirect to a success page after payment
+
+        return redirect('salary')  # Render success page
+
     return render(request, 'salary.html')
 
-def payment_success(request):
-    return render(request, 'payment_success.html')
+
+
+
 
 

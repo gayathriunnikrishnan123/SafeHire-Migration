@@ -1,90 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UPI Payment</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-        }
+{% extends "userpage.html" %}
+{% block title %}Worker{% endblock %}
+{% block content %}
 
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 50px;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        input[type="number"],
-        input[type="text"],
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-            width: 100%;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
 <body>
     <div class="container">
-        <h2>UPI Payment</h2>
-        <form method="post">
+        <h2 class="mb-4">Salary <span>Payment</span></h2>
+        <form id="salary-form" action="{% url 'salary' %}" method="post">
             {% csrf_token %}
-            <div class="form-group">
-                <label for="paymentAmount">Payment Amount:</label>
-                <input type="number" class="form-control" id="paymentAmount" name="paymentAmount" required>
+            <div class="form-floating">
+                <label for="name">Worker </label>
+                <input type="text" name="name" id="subject" class="form-control" placeholder=" Name" required>
             </div>
-            <div class="form-group">
-                <label for="paymentDate">Payment Date:</label>
-                <input type="date" class="form-control" id="paymentDate" name="paymentDate" required>
+            <div class="form-floating my-4">
+                <label for="amount">Salary</label>
+                <input type="text" name="amount" id="subject" class="form-control" placeholder="Salary" required>
             </div>
-            <div class="form-group">
-                <label for="upiID">UPI ID:</label>
-                <input type="text" class="form-control" id="upiID" name="upiID" required>
+            <h5>Card Details</h5>
+            <div class="form-floating my-4">
+                <label for="subject">Card Holder Name</label>
+                <input type="text" name="card_name" id="subject" class="form-control" placeholder="Card Holder Name" required>
             </div>
-            <div class="form-group">
-                <label for="transactionID">Transaction ID:</label>
-                <input type="text" class="form-control" id="transactionID" name="transactionID" required>
+            <div class="form-floating my-4">
+                <label for="subject">Card Number</label>
+                <input type="text" name="card_no" pattern="[0-9]{16}" title='Enter 16 digits' id="subject" class="form-control" placeholder="Card Number" required>
             </div>
-            
-            <button type="submit">Submit Payment</button>
+            <div class="form-floating my-4">
+                <label for="subject">CVV</label>
+                <input type="text" name="cvv" pattern="[0-9]{3}" title='Enter 3 digits' id="subject" class="form-control" placeholder="CVV" required>
+            </div>
+            <div class="form-floating my-4">
+                <label for="paymentDate">Payment Date</label>
+                <input type="date" name="paymentDate" id="paymentDate" class="form-control" required>
+            </div>
+            <div class="col-lg-5 col-6">
+                <button type="submit" class="form-control" id="submitBtn">Submit</button>
+            </div>
         </form>
     </div>
+
+    <script>
+        document.getElementById('salary-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+            // Perform AJAX form submission
+            fetch(this.action, {
+                method: this.method,
+                body: new FormData(this),
+                headers: {
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Show success message
+                    alert('Payment successful');
+                    // Optionally, you can redirect the user to another page after showing the message
+                    window.location.href = '{% url 'salary' %}';
+                } else {
+                    alert('Payment failed'); // Show error message
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred'); // Show error message
+            });
+        });
+    </script>
+
 </body>
 </html>
+    
+<style>
+    /* Custom CSS for Salary Payment page */
+.contact {
+    background-color: #f8f9fa;
+    padding: 80px 0;
+}
+
+.contact h2 {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 40px;
+}
+
+.contact-form {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form label {
+    font-weight: bold;
+}
+
+.contact-form input[type="text"] {
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.contact-form input[type="text"]:focus {
+    border-color: #6c757d;
+}
+
+.contact-form input[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 30px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.contact-form input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.contact-form .form-floating {
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .contact h2 {
+        font-size: 28px;
+    }
+
+    .contact-form {
+        padding: 20px;
+    }
+}
+
+</style>
+
+{% endblock content %}

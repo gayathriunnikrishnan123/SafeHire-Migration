@@ -60,7 +60,6 @@ urlpatterns = [
     path('works_available/', views.works_available, name='works_available'),
     path('jobs/', views.jobs, name='jobs'),
     path('salary/', views.salary, name='salary'),
-    path('payment_success/', views.payment_success, name='payment_success'),
 
 ]
 
