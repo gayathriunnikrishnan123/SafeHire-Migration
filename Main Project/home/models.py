@@ -212,4 +212,18 @@ class JobSubmission(models.Model):
 
 
 
+from django.db import models
+
+class UPIPayment(models.Model):
+    payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_date = models.DateField()
+    upi_id = models.CharField(max_length=100)
+    transaction_id = models.CharField(max_length=100)
+    payment_status = models.CharField(max_length=20, choices=[
+        ('Pending', 'Pending'),
+        ('Completed', 'Completed'),
+        ('Failed', 'Failed'),
+    ])
+
+
 

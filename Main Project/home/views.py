@@ -896,4 +896,31 @@ def jobs(request):
      return render(request, 'jobs.html', {'submitted_jobs':submitted_jobs})
 
  
+from django.shortcuts import render, redirect
+from .models import UPIPayment
+
+def salary(request):
+    if request.method == 'POST':
+        payment_amount = request.POST.get('paymentAmount')
+        payment_date = request.POST.get('paymentDate')
+        upi_id = request.POST.get('upiID')
+        transaction_id = request.POST.get('transactionID')
+        payment_status = request.POST.get('paymentStatus')
+        
+        # Save payment details to the database
+        upi_payment = UPIPayment.objects.create(
+            payment_amount=payment_amount,
+            payment_date=payment_date,
+            upi_id=upi_id,
+            transaction_id=transaction_id,
+            payment_status=payment_status
+        )
+        upi_payment.save()
+        
+        return redirect('payment_success')  # Redirect to a success page after payment
+    return render(request, 'salary.html')
+
+def payment_success(request):
+    return render(request, 'payment_success.html')
+
 

@@ -78,7 +78,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
 
     <style>
-        /* Your existing CSS styles here */
         body {
             background-color: #f8f9fa;
         }
@@ -88,7 +87,7 @@
             top: 0;
             left: 0;
             bottom: 0;
-            background-color:  #333;
+            background-color: #333;
             color: #fff;
         }
 
@@ -110,40 +109,18 @@
             margin-left: 16.25rem; /* Same as sidebar width */
         }
 
-        .border-bottom {
-            border-bottom: 1px solid #e9ecef;
+        /* Jumping boxes animation */
+        .jumping-box {
+            animation: jump 1s ease-in-out infinite alternate;
         }
 
-        h1 {
-            font-size: 1.75rem;
-        }
-
-        h3 {
-            font-size: 1.5rem;
-        }
-
-        .table-responsive {
-            margin-top: 1rem;
-        }
-
-        /* Custom CSS for the "Total Users" stat box */
-        .stat-box {
-            background-color: #fff;
-            border: 1px solid #e9ecef;
-            border-radius: 4px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .stat-box h2 {
-            font-size: 1.25rem;
-            margin-bottom: 10px;
-        }
-
-        .stat-box p {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #007BFF; /* Custom color */
+        @keyframes jump {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-20px);
+            }
         }
     </style>
 
