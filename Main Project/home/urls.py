@@ -60,6 +60,8 @@ urlpatterns = [
     path('works_available/', views.works_available, name='works_available'),
     path('jobs/', views.jobs, name='jobs'),
     path('salary/', views.salary, name='salary'),
+    path('payment_details/', views.payment_details, name='payment_details'),
+    path('setting/', views.setting, name='setting'),
 
 ]
 

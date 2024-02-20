@@ -911,7 +911,7 @@ def salary(request):
 
         # Create SalaryPayment instance
         salary_payment = SalaryPayment.objects.create(
-            worker_account=worker_name,  # Assuming 'worker_account' stores the worker name
+            name=worker_name,  # Assuming 'worker_account' stores the worker name
             amount=amount,
             payment_date=payment_date,
             card_holder_name=card_holder_name,
@@ -925,7 +925,15 @@ def salary(request):
     return render(request, 'salary.html')
 
 
+from django.shortcuts import render
+from .models import SalaryPayment
+
+def payment_details(request):
+    payments = SalaryPayment.objects.all()
+    return render(request, 'payment_details.html', {'payments': payments})
 
 
-
+def setting(request):
+    payments = SalaryPayment.objects.all()
+    return render(request, 'setting.html', {'payments': payments})
 

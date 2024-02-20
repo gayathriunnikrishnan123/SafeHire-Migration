@@ -217,7 +217,7 @@ from django.db import models
 
 class SalaryPayment(models.Model):
     worker = models.ForeignKey(MigratoryWorker, on_delete=models.CASCADE,blank=True,null=True)
-    worker_account = models.CharField(max_length=100)
+    name = models.CharField(max_length=100,blank=True,null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateField()
     card_holder_name = models.CharField(max_length=100)
