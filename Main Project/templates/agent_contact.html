@@ -143,27 +143,33 @@
     </div>
 
     <!-- Modal -->
-    <div id="bookingModal">
+    <div id="bookingModal" class="modal">
         <div class="modal-content">
             <span class="close" id="closeModal">&times;</span>
             <h2>Book Worker</h2>
-            <form id="bookingForm" action="{% url 'book_worker' agent.id worker.id %}" method="post">
-
+            <form id="bookingForm" method="post">
                 {% csrf_token %}
-                <label for="duration">Duration:</label>
-                <input type="number" name="duration" id="duration" required>
-
-                <label for="durationUnit">Duration Unit:</label>
-                <select name="durationUnit" id="durationUnit" required>
-                    <option value="days">Days</option>
-                    <option value="months">Months</option>
+                
+                <label for="jobTitle">Job Title:</label>
+                <select name="jobTitle" id="jobTitle" required>
+                    {% for job_submission in job_submissions %}
+                        <option value="{{ job_submission.id }}">{{ job_submission.title }}</option>
+                    {% endfor %}
                 </select>
 
-
+    
+                <label for="workLocation">Work Location:</label>
+                <input type="text" name="workLocation" id="workLocation" required>
+    
+                <label for="duration">Duration (in months):</label>
+                <input type="number" name="duration" id="duration" required min="1" max="24">
+    
                 <button id="book" type="submit">Book Worker</button>
             </form>
         </div>
     </div>
+    
+    
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
@@ -174,6 +180,23 @@
 
             $('#closeModal').click(function() {
                 $('#bookingModal').css('display', 'none');
+            });
+
+            // Close the modal when clicking outside of it
+            window.onclick = function(event) {
+                if (event.target == document.getElementById('bookingModal')) {
+                    $('#bookingModal').css('display', 'none');
+                }
+            };
+
+            // JavaScript validation for the duration field
+            $('#duration').on('input', function() {
+                var duration = $(this).val();
+                if (duration < 1 || duration > 24) {
+                    $(this).get(0).setCustomValidity('Duration must be between 1 and 24 months');
+                } else {
+                    $(this).get(0).setCustomValidity('');
+                }
             });
         });
     </script>

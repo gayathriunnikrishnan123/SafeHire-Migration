@@ -647,34 +647,39 @@ def agent_contact(request, agent_id, worker_id):
     return render(request, 'agent_contact.html', context)
 
 from django.shortcuts import render, redirect
-from .models import BookingWorker, CustomUser, MigratoryWorker
-from django.http import JsonResponse
-
+from .models import BookingWorker, CustomUser, MigratoryWorker, JobSubmission
+from django.views.decorators.cache import never_cache
+from django.contrib.auth.decorators import login_required
 
 @never_cache
 @login_required(login_url='login')
 def book_worker(request, agent_id, worker_id):
     if request.method == 'POST':
+        category_name = request.POST.get('jobTitle')
+        work_location = request.POST.get('workLocation')
         duration = request.POST.get('duration')
-        duration_unit = request.POST.get('durationUnit')
 
-        employer = request.user  # Assuming the user making the request is the employer
-        agent = CustomUser.objects.get(id=agent_id)  # Get the agent
-        worker = MigratoryWorker.objects.get(id=worker_id)  # Get the worker
+        employer = request.user
+        agent = CustomUser.objects.get(id=agent_id)
+        worker = MigratoryWorker.objects.get(id=worker_id)
+        job_submission = JobSubmission.objects.get(id=job_submission_id)
 
-        # Create a booking record
         booking = BookingWorker.objects.create(
             employer=employer,
             agent=agent,
             worker=worker,
+            title=category,
+            work_location=work_location,
             duration=duration,
-            duration_unit=duration_unit,
-            status='pending'  # You might want to set an initial status
+            status='pending'
         )
-
-        # You can add additional logic here, such as sending notifications to the agent, etc.
-
         return redirect('agent_contact', agent_id=agent_id, worker_id=worker_id)
+    else:
+        # Retrieve job submissions for the dropdown
+        job_submissions = JobSubmission.objects.all()
+        return render(request, 'agent_contact.html', {'job_submissions': job_submissions})
+
+
     
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse

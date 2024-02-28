@@ -6,7 +6,8 @@
 
 <head>
     <title>Work Categories</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    {% load static %} <!-- Load the static tag library -->
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
 </head>
 
 <body>
@@ -14,7 +15,7 @@
         <h1>Work Categories</h1>
 
         <div class="work-categories">
-            <form id="addCategoryForm" method="post" >
+            <form id="addCategoryForm" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <input type="text" name="category-name" id="category-name" class="form-control" placeholder="Category Name">
@@ -32,7 +33,6 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                
                 <tbody>
                     {% for category in categories %}
                     <tr>
@@ -50,12 +50,38 @@
                     </tr>
                     {% endfor %}
                 </tbody>
-                
             </table>
         </div>
     </div>
 
-    <script src="scripts.js"></script>
+    <script src="{% static 'scripts.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var addCategoryForm = document.getElementById('addCategoryForm');
+            var categoryNameInput = document.getElementById('category-name');
+    
+            addCategoryForm.addEventListener('submit', function (event) {
+                var categoryNames = document.querySelectorAll('.table tbody tr td:first-child input[type="text"]');
+                var categoryNameValue = categoryNameInput.value.trim();
+                var duplicate = false;
+    
+                for (var i = 0; i < categoryNames.length; i++) {
+                    if (categoryNames[i].value.trim() === categoryNameValue) {
+                        duplicate = true;
+                        alert('Category with the same name already exists.'); // Display alert message for duplicate category
+                        break;
+                    }
+                }
+    
+                if (duplicate) {
+                    event.preventDefault(); // Prevent form submission
+                } else {
+                    // Add code to submit the form to the server here if necessary
+                    alert('New work category added successfully.'); // Display alert message for successful addition
+                }
+            });
+        });
+    </script>
 </body>
 <style>
     body {
