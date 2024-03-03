@@ -637,220 +637,21 @@ def generate_work_permit_pdf(request, worker_id):
 
     return response
 
+from django.shortcuts import render, get_object_or_404
+from .models import CustomUser, MigratoryWorker, JobSubmission
+
+
 @never_cache
 @login_required(login_url='login')
+
+
 def agent_contact(request, agent_id, worker_id):
-    agent = CustomUser.objects.get(id=agent_id) 
-    worker = MigratoryWorker.objects.get(id=worker_id)  
-    context = {'agent': agent,
-               'worker':worker}
+    agent = get_object_or_404(CustomUser, id=agent_id) 
+    worker = get_object_or_404(MigratoryWorker, id=worker_id)
+    assigned_job = JobSubmission.objects.filter(title=worker.category)  # Assuming each agent has only one job submission
+    
+    context = {'agent': agent, 'worker': worker, 'job': assigned_job}
     return render(request, 'agent_contact.html', context)
-
-from django.shortcuts import render, redirect
-from .models import BookingWorker, CustomUser, MigratoryWorker, JobSubmission
-from django.views.decorators.cache import never_cache
-from django.contrib.auth.decorators import login_required
-
-@never_cache
-@login_required(login_url='login')
-def book_worker(request, agent_id, worker_id):
-    if request.method == 'POST':
-        category_name = request.POST.get('jobTitle')
-        work_location = request.POST.get('workLocation')
-        duration = request.POST.get('duration')
-
-        employer = request.user
-        agent = CustomUser.objects.get(id=agent_id)
-        worker = MigratoryWorker.objects.get(id=worker_id)
-        job_submission = JobSubmission.objects.get(id=job_submission_id)
-
-        booking = BookingWorker.objects.create(
-            employer=employer,
-            agent=agent,
-            worker=worker,
-            title=category,
-            work_location=work_location,
-            duration=duration,
-            status='pending'
-        )
-        return redirect('agent_contact', agent_id=agent_id, worker_id=worker_id)
-    else:
-        # Retrieve job submissions for the dropdown
-        job_submissions = JobSubmission.objects.all()
-        return render(request, 'agent_contact.html', {'job_submissions': job_submissions})
-
-
-    
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from .models import BookingWorker
-from django.contrib.auth.decorators import login_required
-
-@never_cache
-@login_required(login_url='login')
-def notification(request):
-    if request.method == 'POST':
-        booking_id = request.POST.get('booking_id')
-        booking = get_object_or_404(BookingWorker, id=booking_id)
-
-        if request.POST.get('action') == 'accept':
-            # Accept the booking
-            booking.is_accepted = True
-            booking.status = 'accepted'
-            booking.save()
-        elif request.POST.get('action') == 'reject':
-            # Reject the booking
-            booking.is_rejected = True
-            booking.status = 'rejected'
-            booking.save()
-
-    agent_id = request.user.id
-    bookings = BookingWorker.objects.filter(agent__id=agent_id)
-
-    return render(request, 'notification.html', {'bookings': bookings})
-
-
-@never_cache
-@login_required(login_url='login')
-def bookings(request):
-    employer = request.user
-    bookings = BookingWorker.objects.filter(employer=employer)
-
-    # Create a list to store booking and payment information
-    booking_data = []
-
-    for booking in bookings:
-        # Assuming each booking has a related Payment, you can fetch it like this
-        payment = Payment.objects.filter(booking=booking).first()
-
-        # Add a dictionary with booking and payment information to the list
-        booking_data.append({'booking': booking, 'payment': payment})
-
-    return render(request, 'bookings.html', {'booking_data': booking_data})
-
-
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
-from django.conf import settings
-import razorpay
-import logging
-
-logger = logging.getLogger(__name__)
-
-
-def handle_payment(request):
-    if request.method == 'POST':
-        booking_id = request.POST.get('booking_id')
-        razorpay_order_id = request.POST.get('razorpay_order_id')
-        razorpay_payment_id = request.POST.get('razorpay_payment_id')
-        worker_id = request.POST.get('worker_id')
-
-        booking = get_object_or_404(BookingWorker, id=booking_id)
-        worker = MigratoryWorker.objects.get(id=worker_id)
-        print("id is",booking_id)
-
-        # Define your fixed security amount here
-        fixed_security_amount = 50000  # Adjust this amount as needed
-
-        client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
-
-        try:
-            # Verify the Razorpay payment
-            payment = client.payment.fetch(razorpay_payment_id)
-            logger.info(f'Razorpay Payment Response: {payment}')
-
-            if payment['order_id'] == razorpay_order_id:
-                # Check if payment is successful
-                if payment['status'] in ['authorized', 'captured']:
-                    # Calculate the actual payment amount (subtract the security amount)
-                    actual_payment_amount = (50000) / 100
-
-                    # Ensure the actual payment amount is at least zero
-                   
-
-                    # Payment successful
-                    Payment.objects.create(
-                        employer=request.user, worker=worker,
-                        booking=booking,
-                        amount=actual_payment_amount,
-                        razorpay_order_id=razorpay_order_id,
-                        razorpay_payment_id=razorpay_payment_id,
-                        is_paid=True
-                    )
-
-                    # Update booking status or perform other actions as needed
-                    booking.status = 'accepted'  # Update to the correct status
-                    booking.save()
-
-                    return redirect('bookings')
-                else:
-                    logger.error('Payment verification failed. Payment status: {}'.format(payment['status']))
-                    return JsonResponse({'success': False, 'message': 'Payment verification failed'})
-            else:
-                logger.error('Invalid order ID')
-                return JsonResponse({'success': False, 'message': 'Invalid order ID'})
-        except Exception as e:
-            logger.error(f'Razorpay Verification Error: {e}')
-            return JsonResponse({'success': False, 'message': str(e)})
-    else:
-        return JsonResponse({'error': 'Invalid request'})
-    
-
-    
-    
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
-from reportlab.pdfgen import canvas
-from io import BytesIO
-
-
-def generate_payment_receipt_pdf(request, booking_id):
-    # Get the booking and related data
-    booking_data = get_object_or_404(BookingWorker, id=booking_id)
-
-    # Create a file-like buffer to receive PDF data
-    buffer = BytesIO()
-
-    # Create the PDF object using the BytesIO buffer
-    pdf = canvas.Canvas(buffer)
-
-    # Generate the PDF content
-    pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(100, 800, f"Payment Receipt")
-    pdf.setFont("Helvetica-Bold", 10)
-    pdf.drawString(100, 780, f"Worker: {booking_data.worker}")
-    pdf.drawString(100, 760, f"Agent: {booking_data.agent}")
-
-    payment = Payment.objects.get(booking=booking_data)
-
-    pdf.drawString(100, 720, f"Payment Date: {payment.date}")
-    pdf.drawString(100, 700, f"Payment Amount: Rs. {payment.amount}")
-    pdf.drawString(100, 740, f"Note: You have paid a security deposit of Rs. 500 for the worker.")
-
-    pdf.showPage()
-    pdf.save()
-    buffer.seek(0)
-    
-    # Set content type to 'application/pdf' and provide the PDF content
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename=payment_receipt_booking_{booking_data.id}.pdf'
-    response.write(buffer.getvalue())
-    
-    return response
-   
-
-
-
-
-# from rest_framework.generics import ListAPIView
-
-
-# class WorkerListView(ListAPIView):
-#     queryset = MigratoryWorker.objects.all()
-#     template_name = 'worker_list.html'
-
-#     def list(self, request, *args, **kwargs):
-#         queryset = self.get_queryset()
 
 
 
@@ -941,4 +742,34 @@ def payment_details(request):
 def setting(request):
     payments = SalaryPayment.objects.all()
     return render(request, 'setting.html', {'payments': payments})
+
+
+@never_cache
+@login_required(login_url='login')
+def book_worker(request, agent_id, worker_id):
+    if request.method == 'POST':
+       
+
+        employer = request.user
+        agent = CustomUser.objects.get(id=agent_id)  # Get the agent
+        worker = MigratoryWorker.objects.get(id=worker_id)  # Get the worker
+
+        # Create a booking record
+        booking = BookingWorkers.objects.create(
+            employer=employer,
+            agent=agent,
+            worker=worker,
+            job_submission_id=request.POST.get('job_submission_id'),
+           
+        )
+        worker.status="onduty"
+        worker.employer=employer
+        worker.save()
+        return redirect('agent_contact', agent_id=agent_id, worker_id=worker_id)
+
+def booking_workers_view(request):
+    booking_workers = BookingWorkers.objects.all()
+    return render(request, 'booking_workers.html', {'booking_workers': booking_workers})
+
+
 

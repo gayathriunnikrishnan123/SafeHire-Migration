@@ -6,8 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agent Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+
+    </style>
 </head>
-<body>
+<body style="background-image: url('https://cdn.wallpapersafari.com/78/83/8s9fQZ.jpg'); background-size: cover;">
     <div id="content-main" class="container-fluid">
         <div class="row">
             <nav class="col-md-2 d-none d-md-block sidebar">
@@ -41,9 +44,13 @@
                       </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/notification"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
-                            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
-                          </svg> Notifications</a>
+                        <a class="nav-link" href="{% url 'booking_workers' %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
+                                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
+                            </svg> 
+                            Notifications
+                        </a>
+                        
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
@@ -59,13 +66,14 @@
                 </ul>
             </nav>
 
-            <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4">
-                {% block content %}
-                <span style="font-size: 40px;">
-                    SafeHire Migration - Welcome! {{ user.username }}
-                  </span>
-                {% endblock %}
-            </main>
+        <main role="main" style="background-image: url('https://wallpapers.com/images/featured/minimalist-desktop-fpwai86ic8lh6trx.jpg'); background-size: cover; background-position: center; box-shadow: none;">
+    {% block content %}
+    <span style="font-size: 40px; color: white;">
+        SafeHire Migrations - Welcome! {{ user.username }}
+    </span>
+    {% endblock %}
+</main>
+            
         </div>
     </div>
 

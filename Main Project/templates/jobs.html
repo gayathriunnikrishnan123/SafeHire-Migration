@@ -9,7 +9,7 @@
             <ul class="job-items">
                 {% for job in submitted_jobs %}
                     <li class="job-item">
-                        <h4>Job title:{{ job.title }}</h4> <!-- Display category name -->
+                        <h4>Job title:{{ job.category }}</h4> <!-- Display category name -->
                         <p>Type of Work: {{ job.work_type }}</p>
                         <p>Work Location: {{ job.work_location }}</p>
                         <p>Duration in months: {{ job.duration }}</p>

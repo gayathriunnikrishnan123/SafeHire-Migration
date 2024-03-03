@@ -92,7 +92,7 @@
       <input type="text" id="searchInput" onkeyup="searchWorkers()" placeholder="Search for workers..." title="Type in a name">
 
      
-    <table class="table">
+    <table class="table" style="background-image: url('https://wallpapers.com/images/featured/minimalist-desktop-fpwai86ic8lh6trx.jpg');">
     <thead>
         <tr>
             <th>Photo</th>
@@ -102,6 +102,7 @@
             <th>Contact Number</th>
             <th>Adhar Number</th>
             <th>Work Assigned</th>
+            <th>Status</th>
             <th>Agent Contact</th>
             <th>Work Permit</th>
         </tr>
@@ -129,13 +130,19 @@
                             No assigned work
                         {% endif %}
                     </td>
-                    <td>
-                        {% if worker.agent %}
-                            <a href="{% url 'agent_contact' agent_id=worker.agent.id worker_id=worker.id %}" id="worker">{{ worker.agent.first_name }}Agent</a>
-                        {% else %}
-                            No assigned agent
-                        {% endif %}
-                    </td>
+                    <td>{{worker.status}}</td>
+                        <td>
+                            {% if worker.status != 'onduty' %}
+                                {% if worker.agent %}
+                                    <a href="{% url 'agent_contact' agent_id=worker.agent.id worker_id=worker.id %}" id="worker">{{ worker.agent.first_name }}Agent</a>
+                                {% else %}
+                                    No assigned agent
+                                {% endif %}
+                            {% else %}
+                                Worker on duty
+                            {% endif %}
+                        </td>
+                        
                     <td>
                         {% if worker.work_permit_verified %}
                         <a href="{% url 'generate_work_permit_pdf' worker.id %}" class="btn btn-primary" download>Download Work Permit</a>

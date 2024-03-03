@@ -103,7 +103,7 @@ class MigratoryWorker(models.Model):
     police = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='police_workers', limit_choices_to={'is_police': True},blank=True, null=True)
     agent = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='agent_workers', limit_choices_to={'is_agent': True})
     employer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='employer_workers', limit_choices_to={'is_employer': True},blank=True, null=True)
-
+    status = models.CharField(max_length=20,blank=True, null=True )
     def __str__(self):
         return self.first_name
     
@@ -129,10 +129,6 @@ class Police(models.Model):
     
 
 
-from django.db import models
-from django.contrib.auth.models import User
-from django.conf import settings
-
 
 
 class JobSubmission(models.Model):
@@ -150,7 +146,7 @@ class JobSubmission(models.Model):
         ('PhD', 'PhD'),
     ]
 
-    title = models.CharField(max_length=100,blank=True, null=True)  # Change to CharField to store category name
+    title = models.ForeignKey(WorkCategory, on_delete=models.CASCADE,blank=True, null=True)# Change to CharField to store category name
     work_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
     work_location = models.CharField(max_length=100)
     duration = models.PositiveIntegerField(help_text='Duration in months')
@@ -161,17 +157,17 @@ class JobSubmission(models.Model):
 
     def __str__(self):
         return f"Job Submission - {self.title}"
-
     
+
+
 from django.db import models
 from .models import CustomUser, MigratoryWorker, JobSubmission
 
-
-class BookingWorker(models.Model):
+class BookingWorkers(models.Model):
     employer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='bookings_as_employer')
     agent = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='bookings_as_agent')
     worker = models.ForeignKey(MigratoryWorker, on_delete=models.CASCADE, related_name='bookings')
-    title = models.ForeignKey(JobSubmission, on_delete=models.CASCADE, related_name='booking_workers', null=True, blank=True)
+    job_submission = models.ForeignKey(JobSubmission, on_delete=models.CASCADE, related_name='booking_workers', null=True, blank=True)
     date_requested = models.DateTimeField(auto_now_add=True)
     is_accepted = models.BooleanField(default=False)
     is_rejected = models.BooleanField(default=False)
@@ -180,32 +176,8 @@ class BookingWorker(models.Model):
         return f'{self.employer} requested {self.worker} (Job Title: {self.job_submission.title})'
 
 
-    
-
-class Payment(models.Model):
-    
-    employer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    worker = models.ForeignKey(MigratoryWorker, on_delete=models.CASCADE,blank=True,null=True)
-    booking = models.ForeignKey(BookingWorker, on_delete=models.CASCADE, related_name='payments')
-    amount = models.DecimalField(max_digits=10, decimal_places=2) 
-    payment_receipt = models.FileField(upload_to='payment_receipts/', null=True, blank=True)
-    razorpay_order_id = models.CharField(max_length=255, null=True, blank=True)
-    razorpay_payment_id = models.CharField(max_length=255, null=True, blank=True)
-    is_paid=models.BooleanField(default=False)
-    date = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'Payment for Booking {self.booking}'
-    
 
 
-
-
-
-
-
-
-from django.db import models
 
 class SalaryPayment(models.Model):
     worker = models.ForeignKey(MigratoryWorker, on_delete=models.CASCADE,blank=True,null=True)

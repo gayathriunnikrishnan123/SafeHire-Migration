@@ -124,81 +124,47 @@
         }
     </style>
 </head>
-<body>
+<body style="background-image: url('https://wallpapers.com/images/featured/minimalist-desktop-fpwai86ic8lh6trx.jpg'); background-size: cover; background-position: center;">
     <header>
         <h1>Agent Contact</h1>
     </header>
 
-    <div class="container">
+    <div class="container"<body style="background-image: url('https://wallpapers.com/images/featured/minimalist-desktop-fpwai86ic8lh6trx.jpg'); background-size: cover; background-position: center;">
         <div class="agent-details">
             <h2>{{ agent.name }}</h2>
             <p>Contact: {{ agent.phone }}</p>
             <p>Email: {{ agent.email }}</p>
         </div>
 
-        <div class="chat-box">
-            <h5>Sent request to Agent For booking Worker</h5>
-            <button id="sendMessageBtn">Sent Request</button>
-        </div>
-    </div>
+        <div class="worker-details">
+            <h2>Worker Details</h2>
+            <p>Name: {{ worker.first_name }}</p>
+            <p>Job Assigned: {{ worker.category }}</p>
+            <div class="job-details">
+                {% if job %}
+                {% for jobs in job %}
+                    <h2>Job Details</h2>
+                    <p>Title: {{jobs.title.name }}</p>
+                    <p>Work Type: {{ jobs.work_type }}</p>
+                    <p>Work Location: {{ jobs.work_location }}</p>
+                    <p>Duration: {{ jobs.duration }} months</p>
+                    
+                    <form id="bookingForm" method="post" action="{% url 'book_worker' agent.id worker.id %}">
+                        {% csrf_token %}
+                        <!-- Add form fields for booking details -->
+                        <input type="hidden" value="{{jobs.id}}" name="job_submission_id" id="job_submission_id">
+                        <button id="book" type="submit" {% if  jobs %}  >Book Worker</button>
+                        {% endif %}
+                    </form>
+                {% endfor%}
+                {% else %}
+                    <p>No work submitted by the employer.</p>
+                {% endif %}
+            </div>
+            
+      
 
-    <!-- Modal -->
-    <div id="bookingModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
-            <h2>Book Worker</h2>
-            <form id="bookingForm" method="post">
-                {% csrf_token %}
-                
-                <label for="jobTitle">Job Title:</label>
-                <select name="jobTitle" id="jobTitle" required>
-                    {% for job_submission in job_submissions %}
-                        <option value="{{ job_submission.id }}">{{ job_submission.title }}</option>
-                    {% endfor %}
-                </select>
-
     
-                <label for="workLocation">Work Location:</label>
-                <input type="text" name="workLocation" id="workLocation" required>
-    
-                <label for="duration">Duration (in months):</label>
-                <input type="number" name="duration" id="duration" required min="1" max="24">
-    
-                <button id="book" type="submit">Book Worker</button>
-            </form>
-        </div>
-    </div>
-    
-    
-
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#sendMessageBtn').click(function() {
-                $('#bookingModal').css('display', 'block');
-            });
-
-            $('#closeModal').click(function() {
-                $('#bookingModal').css('display', 'none');
-            });
-
-            // Close the modal when clicking outside of it
-            window.onclick = function(event) {
-                if (event.target == document.getElementById('bookingModal')) {
-                    $('#bookingModal').css('display', 'none');
-                }
-            };
-
-            // JavaScript validation for the duration field
-            $('#duration').on('input', function() {
-                var duration = $(this).val();
-                if (duration < 1 || duration > 24) {
-                    $(this).get(0).setCustomValidity('Duration must be between 1 and 24 months');
-                } else {
-                    $(this).get(0).setCustomValidity('');
-                }
-            });
-        });
-    </script>
 </body>
 </html>

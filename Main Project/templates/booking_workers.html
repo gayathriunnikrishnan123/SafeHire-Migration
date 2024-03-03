@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Workers</title>
+    <style>
+        /* Navbar styles */
+        .navbar {
+            background-color: #333;
+            color: white;
+            font-weight: bold;
+            padding: 20px;
+            text-align: center;
+            font-size: 42px; /* Increase font size */
+        }
+        
+
+        /* Box styles */
+        .box {
+            background-color: rgba(240, 240, 240, 0.5); /* Increase opacity */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+
+        /* Background image */
+        body {
+            background-image: url('https://speckyboy.com/wp-content/uploads/2020/11/minimal-desktop-wallpaper-high-resolution-4k-16.jpg');
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">SAFEHIREMIGRATION</div>
+    <h1>Booked Workers</h1> <!-- Removed heading animation -->
+    <div class="container">
+        {% for booking_worker in booking_workers %}
+            <div class="box">
+                <p><strong>Employer:</strong> {{ booking_worker.employer.username }}</p>
+                <p><strong>Worker:</strong> {{ booking_worker.worker.first_name }}</p>
+                <p><strong>Job Title:</strong> {{ booking_worker.job_submission.title }}</p>
+                <p><strong>Job Type:</strong> {{ booking_worker.job_submission.work_type }}</p>
+                <p><strong>Duration:</strong> {{ booking_worker.job_submission.duration }} months</p>
+                <p><strong>Location:</strong> {{ booking_worker.job_submission.work_location }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

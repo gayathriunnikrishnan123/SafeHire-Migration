@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     
 </head>
-<body>
+<body style="background-image: url('https://cdn.wallpapersafari.com/78/83/8s9fQZ.jpg'); background-size: cover;">
  
     <div id="content-main" class="container-fluid">
         <div class="row">
@@ -66,11 +66,12 @@
 
             <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4">
                 {% block content %}
-                <span style="font-size: 40px;">
-                  SafeHire Migration - Welcome! {{ user.username }}
+                <span style="font-size: 40px; color: white;">
+                    SafeHire Migration - Welcome! {{ user.username }}
                 </span>
                 {% endblock %}
             </main>
+            
         </div>
     </div>
 

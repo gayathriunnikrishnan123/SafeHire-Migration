@@ -52,16 +52,13 @@ urlpatterns = [
     path('rejectuser/<int:user_id>/', views.rejectuser, name='rejectuser'),
     path('generate_work_permit_pdf/<int:worker_id>/', generate_work_permit_pdf, name='generate_work_permit_pdf'),
     path('agent_contact/<int:agent_id>/<int:worker_id>/', views.agent_contact, name='agent_contact'),
-    path('book_worker/<int:agent_id>/<int:worker_id>/', views.book_worker, name='book_worker'),
-    path('notification/', views.notification, name='notification'),
-    path('bookings/', views.bookings, name='bookings'),
-    path('handle-payment/', views.handle_payment, name='handle_payment'),
-    path('generate_payment_receipt_pdf/<int:booking_id>/', views.generate_payment_receipt_pdf, name='generate_payment_receipt_pdf'),
     path('works_available/', views.works_available, name='works_available'),
     path('jobs/', views.jobs, name='jobs'),
     path('salary/', views.salary, name='salary'),
     path('payment_details/', views.payment_details, name='payment_details'),
     path('setting/', views.setting, name='setting'),
+    path('book_worker/<int:agent_id>/<int:worker_id>/', views.book_worker, name='book_worker'),
+     path('booking-workers/', views.booking_workers_view, name='booking_workers'),
 
 ]
 
