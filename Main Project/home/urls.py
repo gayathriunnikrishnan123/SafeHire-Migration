@@ -58,7 +58,8 @@ urlpatterns = [
     path('payment_details/', views.payment_details, name='payment_details'),
     path('setting/', views.setting, name='setting'),
     path('book_worker/<int:agent_id>/<int:worker_id>/', views.book_worker, name='book_worker'),
-     path('booking-workers/', views.booking_workers_view, name='booking_workers'),
+    path('booking-workers/', views.booking_workers_view, name='booking_workers'),
+    path('document/', views.document_verification, name='document'),
 
 ]
 

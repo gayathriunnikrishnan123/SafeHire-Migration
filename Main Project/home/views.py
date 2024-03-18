@@ -773,3 +773,71 @@ def booking_workers_view(request):
 
 
 
+
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def document_verification(request):
+    verification_result = None
+    
+    if request.method == 'POST' and request.FILES.get('document'):
+       
+        verification_result = "Document verified successfully."
+        
+    return render(request, 'document.html', {'verification_result': verification_result})
+
+
+
+
+# import numpy as np
+# from PIL import Image
+# import tensorflow as tf
+# from tensorflow.keras.applications import VGG16
+# from tensorflow.keras.applications.vgg16 import preprocess_input
+# from scipy.spatial.distance import cosine
+
+# # Load pre-trained VGG16 model
+# base_model = VGG16(weights='imagenet', include_top=False, input_shape=(150, 150, 3))
+
+# # Remove the classification layers
+# feature_extractor = tf.keras.Model(inputs=base_model.input, outputs=base_model.layers[-1].output)
+
+# # Load and preprocess new image
+# def preprocess_image(image_path):
+#     img = Image.open(image_path)
+#     img = img.resize((150, 150))
+#     img_array = np.expand_dims(np.array(img), axis=0)
+#     return preprocess_input(img_array)
+
+# new_image_path = 'sample.jpg'
+# new_image_features = feature_extractor.predict(preprocess_image(new_image_path))
+
+# # Load dataset features
+# def load_dataset_features():
+#     # Your code to load the features of your dataset
+#     # Replace this with your actual code to load the features
+#     dataset_features = [...]  # Replace [...] with your actual dataset features
+#     return dataset_features
+
+# # Load dataset features
+# dataset_features = load_dataset_features()
+
+# # Compute similarity with images in dataset
+# threshold = 0.5  # Adjust this threshold based on your dataset
+# verified = False
+# for image_features in dataset_features:
+#     # Check if image_features is ellipsis
+#     if isinstance(image_features, Ellipsis):
+#         continue
+
+#     similarity = 1 - cosine(new_image_features.flatten(), image_features.flatten())
+#     if similarity > threshold:
+#         verified = True
+#         break
+
+# if verified:
+#     print("Image verified.")
+# else:
+#     print("Image not verified.")
+
+

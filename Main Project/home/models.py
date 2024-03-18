@@ -171,6 +171,7 @@ class BookingWorkers(models.Model):
     date_requested = models.DateTimeField(auto_now_add=True)
     is_accepted = models.BooleanField(default=False)
     is_rejected = models.BooleanField(default=False)
+    
 
     def __str__(self):
         return f'{self.employer} requested {self.worker} (Job Title: {self.job_submission.title})'
