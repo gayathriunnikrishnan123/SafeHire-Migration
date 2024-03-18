@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submitted jobs list</title>
+</head>
+<body>
+    <h2>Job Submitted Successfully!</h2>
+    <h3>List of Jobs Submitted by {{ request.user.username }}</h3>
+    <ul>
+        {% for job in employer_jobs %}
+            <li>{{ job.title }} - {{ job.work_type }} - {{ job.work_location }} - {{ job.duration }} months</li>
+        {% empty %}
+            <li>No jobs submitted yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

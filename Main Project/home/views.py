@@ -787,6 +787,36 @@ def document_verification(request):
     return render(request, 'document.html', {'verification_result': verification_result})
 
 
+def joblist(request):
+    if request.method == 'POST':
+        # Process the submitted job form
+        job_title = request.POST.get('jobTitle')
+        work_type = request.POST.get('workType')
+        work_location = request.POST.get('workLocation')
+        duration = request.POST.get('duration')
+        qualification = request.POST.get('qualification')
+        # Assuming you have an Employer model and each job is linked to an employer
+        employer = request.user.employer  # Assuming you have a relationship between User and Employer
+
+        # Save the job to the database
+        job = Job(title=job_title, work_type=work_type, work_location=work_location,
+                  duration=duration, qualification=qualification, employer=employer)
+        job.save()
+
+        # Redirect to job detail view with the job ID
+        return redirect('job_detail', job_id=job.id)
+
+    # Fetch jobs associated with the current employer
+    jobs = JobSubmission.objects.filter(employer=request.user.employer)
+
+    # Pass the job list to the template for rendering
+    return render(request, 'joblist.html', {'jobs': jobs})
+
+
+def bookings(request):
+   employer = request.user.employer
+   bookings = BookingWorkers.objects.filter(employer=employer)
+   return render(request, 'bookings.html', {'bookings': bookings})
 
 
 # import numpy as np
