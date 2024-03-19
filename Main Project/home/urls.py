@@ -60,8 +60,11 @@ urlpatterns = [
     path('book_worker/<int:agent_id>/<int:worker_id>/', views.book_worker, name='book_worker'),
     path('booking-workers/', views.booking_workers_view, name='booking_workers'),
     path('document/', views.document_verification, name='document'),
-    path('joblist/', views.joblist, name='joblist'),
-    path('bookings/', views.bookings, name='bookings'),
+    path('joblist/<int:employer_id>/', views.joblist, name='joblist'),
+    path('bookings/<int:user_id>/', views.bookings, name='bookings'),
+    path('pay_salary/<int:booking_id>/', views.pay_salary, name='pay_salary'),
+    path('notifications/<int:user_id>/', views.booking_workers_view, name='notification_view'),
+
 
 ]
 

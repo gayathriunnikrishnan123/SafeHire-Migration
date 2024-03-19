@@ -9,7 +9,7 @@
             {% csrf_token %}
             <div class="form-floating">
                 <label for="name">Worker </label>
-                <input type="text" name="name" id="subject" class="form-control" placeholder=" Name" required>
+                <input type="text" name="name" id="subject" class="form-control" value="{{ booking.worker.first_name }} {{ booking.worker.last_name }}" placeholder="Name" required>
             </div>
             <div class="form-floating my-4">
                 <label for="amount">Salary</label>

@@ -1,5 +1,5 @@
 {% extends "agentpage.html" %}
-{% block title %}Worker{% endblock %}
+{% block title %}Worker Registration{% endblock %}
 {% block content %}
     {% if messages %}
         {% for message in messages %}
@@ -9,10 +9,11 @@
         {% endfor %}
     {% endif %}
 
-    <h1>Registration Form for Migratory Worker</h1>
-        
-        <form id="registrationForm" action="{% url 'addworker' %}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm(event);">
+    <div style="display: flex;">
+        <form id="registrationForm" action="{% url 'addworker' %}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm(event);" style="width: 100%;">
             {% csrf_token %}
+            <h1>Registration Form for Migratory Worker</h1>
+            
             <!-- Your other form elements -->
             <label for="first_name">Name:</label>
             <input type="text" name="first_name" id="name" oninput="validateName('name')">
@@ -70,11 +71,13 @@
         
             <input type="submit" value="Submit">
         </form>
+    </div>
        
 <style>
     body, h1, h2, h3, p, ul, li {
         margin: 0;
         padding: 0;
+        width:1200px;
     }
     
     body {
@@ -88,13 +91,12 @@
     }
     
     form {
-        width: 50%;
-        margin: 0 auto;
         background-color: #fff;
-        padding: 20px;
+        padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width:300px;
     }
     
     label {

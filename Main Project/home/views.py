@@ -682,7 +682,9 @@ def works_available(request):
             employer=employer,
         )
         job_submission.save()
-        return redirect('works_available')  # Redirect to a success page or the same page
+        
+        # Redirect to joblist view with employer ID
+        return redirect('joblist', employer_id=employer.id)
 
     return render(request, 'works_available.html', {'categories': WorkCategory.objects.all()})
 
@@ -767,8 +769,8 @@ def book_worker(request, agent_id, worker_id):
         worker.save()
         return redirect('agent_contact', agent_id=agent_id, worker_id=worker_id)
 
-def booking_workers_view(request):
-    booking_workers = BookingWorkers.objects.all()
+def booking_workers_view(request, user_id):
+    booking_workers = BookingWorkers.objects.filter(agent=user_id)
     return render(request, 'booking_workers.html', {'booking_workers': booking_workers})
 
 
@@ -787,36 +789,21 @@ def document_verification(request):
     return render(request, 'document.html', {'verification_result': verification_result})
 
 
-def joblist(request):
-    if request.method == 'POST':
-        # Process the submitted job form
-        job_title = request.POST.get('jobTitle')
-        work_type = request.POST.get('workType')
-        work_location = request.POST.get('workLocation')
-        duration = request.POST.get('duration')
-        qualification = request.POST.get('qualification')
-        # Assuming you have an Employer model and each job is linked to an employer
-        employer = request.user.employer  # Assuming you have a relationship between User and Employer
-
-        # Save the job to the database
-        job = Job(title=job_title, work_type=work_type, work_location=work_location,
-                  duration=duration, qualification=qualification, employer=employer)
-        job.save()
-
-        # Redirect to job detail view with the job ID
-        return redirect('job_detail', job_id=job.id)
-
+def joblist(request, employer_id):
+ # Replace EmployerModel with your actual employer model
+    
     # Fetch jobs associated with the current employer
-    jobs = JobSubmission.objects.filter(employer=request.user.employer)
+    employer_jobs = JobSubmission.objects.filter(employer=employer_id)
 
     # Pass the job list to the template for rendering
-    return render(request, 'joblist.html', {'jobs': jobs})
+    return render(request, 'joblist.html', {'jobs': employer_jobs})
 
+def bookings(request, user_id):
 
-def bookings(request):
-   employer = request.user.employer
-   bookings = BookingWorkers.objects.filter(employer=employer)
-   return render(request, 'bookings.html', {'bookings': bookings})
+    # Filter bookings based on the employer
+    bookings = BookingWorkers.objects.filter(employer=user_id)
+
+    return render(request, 'bookings.html', {'bookings': bookings})
 
 
 # import numpy as np
@@ -871,3 +858,7 @@ def bookings(request):
 #     print("Image not verified.")
 
 
+def pay_salary(request, booking_id):
+
+    booking = get_object_or_404(BookingWorkers, id=booking_id)
+    return render(request, 'salary.html', {'booking': booking})
