@@ -1,79 +1,114 @@
+{% extends "userpage.html" %}
+{% block title %}Worker{% endblock %}
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booked Workers List</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2, h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        /* Booked Workers List Styles */
+        .worker-list {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .worker-list li {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .worker-list li:last-child {
+            border-bottom: none;
+        }
+
+        .worker-info {
+            flex-grow: 1;
+        }
+
+        .worker-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .worker-job {
+            color: #666;
+        }
+
+        .worker-date {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .pay-salary-form {
+            display: inline;
+        }
+
+        .pay-salary-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .pay-salary-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* No Bookings Message Styles */
+        .no-bookings {
+            color: #888;
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
     <h2>Booked Workers List</h2>
     <h3>Bookings by {{ request.user.username }}</h3>
-    <ul>
+    <ul class="worker-list">
         {% for booking in bookings %}
             <li>
-                {{ booking.worker.first_name }} - {{ booking.job_submission.title.name }} - {{ booking.date_requested }}
-                <form action="{% url 'pay_salary' booking.id %}" method="POST" style="display: inline;">
+                <div class="worker-info">
+                    <p class="worker-name">Worker name :{{ booking.worker.first_name }}</p>
+                    <p class="worker-category">Work category :{{ booking.job_submission.title.name }}</p>
+                    <p class="worker-duration">Work duration <hr><br>From :{{ booking.job_submission.from_date }} To : {{ booking.job_submission.to_date }}</p>
+                    <p class="worker-date">{{ booking.date_requested }}</p>
+                </div>
+                <form class="pay-salary-form" action="{% url 'pay_salary' booking.id %}" method="POST">
                     {% csrf_token %}
-                    <button type="submit">Pay Salary</button>
+                    <button class="pay-salary-btn" type="submit">Pay Salary</button>
                 </form>
             </li>
         {% empty %}
-            <li>No bookings yet.</li>
+            <li class="no-bookings">No bookings yet.</li>
         {% endfor %}
     </ul>
 </body>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f5f5f5;
-        margin: 0;
-        padding: 20px;
-    }
-
-    h2, h3 {
-        color: #333;
-        margin-bottom: 10px;
-    }
-
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    li {
-        background-color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 15px;
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    li:hover {
-        background-color: #f0f0f0;
-    }
-
-    .no-bookings {
-        color: #777;
-    }
-
-    form {
-        margin: 0;
-    }
-
-    button {
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 3px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background-color: #0056b3;
-    }
-</style>
 </html>
+
+{% endblock content %}

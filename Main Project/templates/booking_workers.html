@@ -45,9 +45,10 @@
                 <p><strong>Employer:</strong> {{ booking_worker.employer.username }}</p>
                 <p><strong>Worker:</strong> {{ booking_worker.worker.first_name }}</p>
                 <p><strong>Job Title:</strong> {{ booking_worker.job_submission.title }}</p>
-                <p><strong>Job Type:</strong> {{ booking_worker.job_submission.work_type }}</p>
-                <p><strong>Duration:</strong> {{ booking_worker.job_submission.duration }} months</p>
-                <p><strong>Location:</strong> {{ booking_worker.job_submission.work_location }}</p>
+                <p><strong>Work Type:</strong> {{ booking_worker.job_submission.work_type }}</p>
+                <p><strong>Duration:</strong> {{ booking_worker.job_submission.from_date }} to {{ booking_worker.job_submission.to_date }}</p>
+                <p><strong>District:</strong> {{ booking_worker.job_submission.district }}</p>
+                <p><strong>City:</strong> {{ booking_worker.job_submission.city }} </p>
             </div>
         {% endfor %}
     </div>

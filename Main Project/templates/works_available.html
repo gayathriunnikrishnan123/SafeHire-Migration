@@ -1,55 +1,71 @@
 {% extends "userpage.html" %}
 {% block title %}Worker{% endblock %}
 {% block content %}
-    <div class="container">
-        <h2>Submit a Job</h2>
-        <form id="jobForm" method="POST" action="{% url 'works_available' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="jobTitle">Job Title:</label>
-                <select id="jobTitle" name="jobTitle">
-                    <option value="select_work">Select job</option>
-                    {% for category in categories %}
-                        <option value="{{ category.name }}">{{ category.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="workType">Type of Work:</label>
-                <select id="workType" name="workType" required>
-                    <option value="">Select</option>
-                    <option value="Full-time">Full-time</option>
-                    <option value="Part-time">Part-time</option>
-                    <option value="Contract">Contract</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="workLocation">Work Location:</label>
-                <input type="text" id="workLocation" name="workLocation" required>
-            </div>
-            <div class="form-group">
-                <label for="duration">Duration (in months):</label>
-                <input type="number" id="duration" name="duration" required>
-            </div>
-            <div class="form-group">
-                <label for="qualification">Qualification Required:</label>
-                <select id="qualification" name="qualification" required>
-                    <option value="">Select</option>
-                    <option value="High School">High School</option>
-                    <option value="Bachelor">Bachelor</option>
-                    <option value="Master">Master</option>
-                    <option value="PhD">PhD</option>
-                </select>
-            </div>
-            <button type="submit">Submit Job</button>
-        </form>
-    </div>
+<div class="container">
+    <h2>Submit a Job</h2>
+    <form id="jobForm" method="POST" action="{% url 'works_available' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="jobTitle">Job Title:</label>
+            <select id="jobTitle" name="jobTitle">
+                <option value="select_work">Select job</option>
+                {% for category in categories %}
+                    <option value="{{ category.name }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="workType">Type of Work:</label>
+            <select id="workType" name="workType" required>
+                <option value="">Select</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Contract">Contract</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="fromDate">From Date:</label>
+            <input type="date" id="fromDate" name="fromDate" required>
+        </div>
+        <div class="form-group">
+            <label for="toDate">To Date:</label>
+            <input type="date" id="toDate" name="toDate" required>
+            <div id="dateError" style="color: red;"></div>
+        </div>
+        <div class="form-group">
+            <h5>Work Location</h5>
+            <label for="district">District:</label>
+            <select id="district" name="district">
+                <option value="">Select District</option>
+                <!-- Add your district options here -->
+                <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                <option value="Kollam">Kollam</option>
+                <option value="Alappuzha">Alappuzha</option>
+                <option value="Pathanamthitta">Pathanamthitta</option>
+                <option value="Kottaym">Kottaym</option>
+                <option value="Idukki">Idukki</option>
+                <option value="Ernakulam">Ernakulam</option>
+                <option value="Thrissur">Thrissur</option>
+                <option value="Palakkad">Palakkad</option>
+                <option value="Malappuram">Malappuram</option>
+                <option value="Kozhikode">Kozhikode</option>
+                <option value="Wayanad">Wayanad</option>
+                <option value="Wayanad">Wayanad</option>
+                <option value="Kasaragod">Kasaragod</option>
+                <!-- Add more countries as needed -->
+            </select>
+        </div>
+        <div class="form-group" id="cityGroup" style="display: none;">
+            <label for="city">City:</label>
+            <select id="city" name="city">
+                <!-- City options will be dynamically loaded -->
+            </select>
+        </div>
+        <button type="submit">Submit Job</button>
+        <button><a href="{% url 'joblist' employer.id %}">View Jobs</a></button>
 
-    <script>
-        document.getElementById("jobForm").addEventListener("submit", function(event) {
-            alert("Job submitted successfully!");
-        });
-    </script>
+    </form>
+</div>
 
     <style>
         body {
@@ -105,6 +121,91 @@
             background-color: #45a049;
         }
 
-   
+        #map {
+            height: 200px; /* Adjust as needed */
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+
+    <script>
+          // Function to fetch cities based on selected district
+          function fetchCities(district) {
+            // Simulate AJAX request to fetch cities (replace with actual AJAX call)
+            const citiesBydistrict = {
+                Thiruvananthapuram: ["Aakkulam", "Adimalathura", "Akathumuri", "AKG Nagar", "Amaravila", "Amboori", "Anad", "Anavoor", "Anchuthengu", "Andoorkonam", "Arayoor", "Arikkadamukku", "Aruvikkara", "Aruvippuram", "Aryanadu", "Athiyannur, Thiruvananthapuram", "Avanavancherry", "Ayiroor, Thiruvananthapuram", "Azhoor", "Balaramapuram", "Bonacaud", "Chemmaruthy", "Chempazhanthy", "Chenkal", "Cheriya Konni", "Cherunniyoor", "Chirayinkeezhu", "Choozhattukotta", "Dhanuvachapuram", "Edakkode", "Edava", "Iroopara", "Kadakkavoor", "Kadinamkulam", "Kaduvakuzhy", "Kallambalam", "Kallar, Trivandrum", "Kallara, Thiruvananthapuram", "Kallikkad", "Kalliyoor", "Kanjiramkulam", "Karakonam", "Karakulam", "Karavaram", "Karicharakadavu", "Karode", "Karumkulam", "Keezharoor", "Keezhattingal (village)", "Keezhthonnakkal", "Keleswaram", "Keraladithyapuram", "Kilimanoor Block Panchayat", "Kilimanoor Grama Panchayath", "Koduvazhannoor", "Koliyakode", "Kollayil (village)", "Koonthalloor", "Kottamom", "Kottukal (village)", "Kovalam", "Kudappanamoodu", "Kudavoor", "Kulathoor, Thiruvananthapuram", "Kulathummal", "Kulaviyode", "Kunnathukal", "Kurisumuttom", "Kurupuzha", "Kuttichal", "Madavoor-Pallickal", "Malayinkeezhu", "Manamboor", "Mandapathinkadavu", "Manikkal", "Mannoorkara", "Maranalloor", "Marianad", "Meenankal", "Melthonnakkal", "Memala", "Menamkulam", "Moothala", "Mudakkal", "Muthana, Thiruvananthapuram district", "Nagaroor", "Nannatukavu", "Navaikulam", "Nellanad", "Ooruttambalam", "Ottasekharamangalam", "Ottoor", "Pakalkuri", "Pallichal", "Pallickal, Thiruvananthapuram", "Pallippuram, Thiruvananthapuram", "Pallithura", "Palode", "Panachamoodu", "Panavoor", "Pangode", "Parassala", "Parasuvaikkal", "Pazhayakunnummel", "Perayam, Thiruvananthapuram", "Peringamala", "Peringammala", "Perumpazhuthoor", "Perunguzhi", "Pirappancode", "Ponganadu", "Poothura", "Poovar", "Pothencode", "Pozhiyoor", "Pulimath", "Pullampara", "Pulluvila", "Punnamoodu", "Puthenthope", "Puthiyakavu", "Puthucurichy", "Sarkara-Chirayinkeezhu", "Singarathoppe", "St. Andrews, Kerala", "Thandalam, Thiruvananthapuram", "Thattathumala", "Theakada", "Thennoor", "Thirupuram", "Tholicode", "Thonnakkal", "Uliyazhathura", "Uzhamalackal", "Vakkom", "Valiyavilapuram", "Vamanapuram", "Vattappara", "Vazhichal", "Vedivechankovil", "Veeranakavu", "Veiloor", "Velavoor", "Vellalloor", "Vellanad", "Vellarada", "Vembannur", "Vembayam", "Venganoor", "Venjarammoodu", "Vennicode", "Venpakal", "Vettoor", "Vilappil", "Vilavoorkkal", "Vithura", "Vizhinjam"],
+                Kollam: ["Adichanalloor", "Adinad", "Alappad", "Alayamon", "Alenchery", "Alimukku", "Alumkadavu", "Alumpeedika", "Anchal", "Anchalumoodu", "Arackal", "Aryankavu", "Attuvassery", "Avaneeswaram", "Ayanivelikulangara", "Ayiramthengu", "Ayiranalloor", "Chachipunna", "Chadayamangalam", "Chakkuvarakkal", "Changankulangara", "Channapetta", "Channappetta", "Chavara", "Chavara Thekkumbhagom", "Chengamanadu, Kollam district", "Chenkilathu", "Cheriazheekkal", "Cherupoika", "Chirakkara", "Chithara", "Chittumala", "Clappana", "Edakkidom", "Edamon", "Edamulackal", "Elamad", "Elampal", "Elampalloor", "Elikkattoor", "Ezhukone", "Ithikkara", "Ittiva", "Iverkala", "Kadaikodu", "Kalayapuram", "Kallada", "Kallelibhagom", "Kalluvathukkal", "Kamukumchery", "Kanjavely", "Kanjiracodu", "Kannetty", "Kappil, Thiruvananthapuram", "Karavaloor", "Kareepra", "Karikuzhi", "Karingannoor", "Keralapuram", "Kizhakkekallada", "Koduvila", "Kottamkara", "Kottappuram, Kollam", "Kottappuram, Paravur", "Kottukadu", "Kottukkal", "Kudavattor", "Kulakkada", "Kulasekharapuram", "Kumbalam, Kollam", "Kummil", "Kundayam", "Kunnathur, Kerala", "Kunnicode", "Kureeppally", "Kuzhimathicadu", "Kuzhithura", "Malamel", "Malumel", "Manampuzha", "Manappally", "Manchalloor", "Mancode", "Mannoor, Kollam", "Mathra", "Mavadi", "Mayyanad", "Meenad", "Melila, Kollam", "Mulavana", "Munroe Island", "Mylakkadu", "Mylom", "Mynagappally", "Nadakkal", "Nadutheri", "Nallila", "Nedumpana", "Neduvannoor", "Neduvathoor", "Neendakara", "Odanavattam", "Onambalam", "Oyoor", "Padappakkara", "Padinjaretheruvu", "Palaruvi", "Pallickal, Kollam", "Pallimon", "Panayam", "Pangodu", "Panmana", "Panthaplavu", "Parankimamukal", "Parippally", "Pathady", "Pattazhy", "Pattazhy Vadakkekara", "Pavithreswaram", "Pavumba", "Pazhanjikadavu", "Perayam, Kollam", "Perinad", "Peringad", "Perumannur", "Perumkulam", "Pidavoor", "Piravanthoor", "Polachira", "Poonkulanji", "Poothakkulam", "Poovattoor", "Pooyappally", "Poruvazhy", "Prakkulam", "Punnala", "Puthenkulam", "Puthoor", "Randalummoodu", "Roaduvila", "Sakthikulangara", "Sasthamkotta", "Sinkarappally", "Sooranad", "Srayikkadu", "Thalavoor", "Thamarakudy", "Thazhathu Kulakkada", "Thazhava", "Thazhava North", "Thazhuthala", "Thenmala", "Thevalakkara", "Thevannoor", "Thinkalkarikkakom", "Thodiyoor", "Thrikkadavoor", "Thrikkannamangal", "Thrikkaruva", "Thrikkovilvattom", "Thudayannoor", "Ummannoor", "Vadakkevila", "Vadakkumthala", "Valacode", "Valakom, Kottarakara", "Valiyakulangara", "Varavila", "Velinalloor", "Veliyam", "Vellimon", "Vendar", "Vettikkavala", "Vilakkudy", "Vilakkupara", "Vilappuram", "West Kallada", "Yeroor"],
+                Alappuzha:["Ala, Alappuzha", "Alappuzha East", "Alappuzha West", "Anaprambal", "Andhakaranazhy", "Aratupuzha", "Arthunkal", "Aryad", "Aryad South", "Bharanikkavu", "Budhanoor", "Champakulam", "Chandiroor", "Chathanad", "Chenkara", "Chennithala", "Cheppad", "Cheriyanad", "Cherthala North", "Cherthala South", "Cheruthana", "Chingoli", "Chunakkara", "Eda Nadu", "Edanad", "Edappon", "Edathua", "Ennakkad", "Eramalloor", "Evoor", "Ezhakadavu", "Ezhupunna", "Kadakkarappally", "Kadamankulam", "Kadampur, Kerala", "Kainady", "Kainakary", "Kainakary North", "Kainakary South", "Kalarcode", "Kalavoor", "Kallissery", "Kallumala", "Kandalloor", "Kandankary", "Kanjikuzhy", "Kannamangalam (Alappuzha)", "Kappil, Alappuzha", "Karazhma", "Kareelakulangara", "Karthikappally", "Karumady", "Karuvatta", "Kattanam", "Kattoor, Alappuzha", "Kavalam", "Keerikkad", "Kodamthuruth", "Kodukulanji", "Koduppunna", "Kollakadavu", "Kozhuvalloor", "Krishnapuram, Alappuzha district", "Kudassanad", "Kumarankary", "Kumarapuram, Alappuzha", "Kunnumma", "Kurattikkadu", "Kurattissery", "Kuthiathode", "Mampuzhakkary", "Manattara", "Mannancherry", "Mararikkulam North", "Mararikulam", "Mazhukeer", "Mezhuveli", "Mithrakary", "Monkombu", "Mulakuzha", "Mullakkal", "Mundankavu", "Muthukulam", "Muttar", "Narakathara", "Narakattaramukku", "Nedumudi", "Neelamperoor", "Neerattupuram", "Nooranad", "Olakettiambalam", "Palamel", "Pallana", "Pallathuruthy", "Pallickal Naduvilemuri", "Pallippad", "Pallippuram, Alappuzha", "Pallithode", "Panavally", "Pandanad", "Pandankary", "Paravur, Alappuzha", "Pathirappally", "Pathiyankara", "Pathiyoor", "Pattanakkad", "Payippad", "Pazhaveedu", "Pennukkara", "Perissery", "Perumbalam", "Perungala", "Poomala Chaal", "Prayikkara", "Pulinkunnoo", "Puliyoor", "Punnapra", "Purakkad", "Puthencavu", "Puthukkary", "Puthuppally, Alappuzha", "Ramankary", "Ramapuram, Alappuzha", "Thaikattussery", "Thakazhy", "Thalavady", "Thamarakkulam", "Thanneermukkom", "Thazhakkara", "Thekkekara, Kerala", "Thiruvanvandoor", "Thottappally", "Thrikkunnapuzha", "Thriperumthura", "Thuravoor Thekku", "Trikkayil", "Ulavaipu", "Vaisyambhagom", "Valiyaperumpuzha", "Vallikunnam", "Vayalar", "Veeyapuram", "Vellakkinar", "Velorvattom", "Venmony", "Vettakkal", "Vettiyar"],
+                Pathanamthitta:["Adoor", "Aruvappulam", "Ayroor", "Elavumthitta", "Enathu", "Ezhamkulam", "Kadampanad", "Kalanjoor", "Kaviyoor", "Kodumon", "Kozhencherry", "Kulanada", "Kuttoor", "Malayalappuzha", "Manjinikkara", "Maramon", "Mezhuveli", "Mylapra", "Naranammoozhy", "Niranam", "Omallur", "Padimon", "Pandalam", "Pandalam Thekkekara", "Parakode", "Pathanamthitta", "Peringara", "Perumthuruthy", "Plappally", "Pulikeezhu", "Ranni", "Thiruvalla", "Thottapuzhassery", "Thumpamon", "Tiruvalla", "Vadaserikara", "Vallamkulam", "Vayalathala", "Vazhakulam", "Vazhavady", "Vazhamuttom", "Vechuchira", "Vennikulam", "Vettoor", "Vijayapuram"],
+                Kottayam:["Kottayam Municipality", "Changanassery", "Vaikom", "Pala", "Kanjirappally", "Erattupetta", "Palai", "Kumarakom", "Manimala", "Ettumanoor", "Thiruvalla", "Chingavanam", "Pampady", "Kanjikkuzhi", "Kuravilangad", "Ponkunnam", "Cherthala", "Thalayolaparambu", "Thalayazham", "Vakathanam", "Meenachil", "Puthuppally", "Kanjirappally", "Changanassery", "Thidanad", "Kudayampady", "Vakathanam", "Neendoor", "Thiruvarppu", "Kumaranalloor", "Manarcaud", "Manimala", "Karukachal", "Changanassery", "Kurichi", "Erumely", "Kallara", "Kodungoor", "Vellavoor", "Puthuppally", "Pampady", "Poonjar", "Kallara", "Elanthur", "Koottickal", "Arpookara", "Kurichy", "Veliyannoor", "Mannanam", "Ponkunnam", "Koovappally", "Koothrappally", "Ramapuram"],
+                Idukki:["Adimali", "Anchuruli", "Chinnakanal", "Chithirapuram", "Devikulam", "Elappara", "Erattayar", "Kanthalloor", "Kattappana", "Kumaramangalam", "Mankulam", "Marayur", "Moolamattom", "Munnar", "Nedumkandam", "Painavu", "Pallivasal", "Rajakkad", "Santhanpara", "Suryanelli", "Thadiyampadu", "Thookkupalam", "Thopramkudy", "Upputhara", "Vandiperiyar", "Vazhathope"],
+                Ernakulam:["Alangad", "Aluva", "Angamaly", "Arookutty", "Chellanam", "Chendamangalam", "Cherai", "Chittattukara", "Chottanikkara", "Choornikkara", "Edathala", "Elamkunnapuzha", "Elanji", "Ernakulam", "Ezhikkara", "Kadamakkudy", "Kadungalloor", "Kakkanad", "Kalady", "Kalamassery", "Kalloorkkad", "Kanjoor", "Karukutty", "Kavalangad", "Kizhakkambalam", "Kodungallur", "Koonammavu", "Kothamangalam", "Kottuvally", "Kumbalam", "Kundannoor", "Kunnathunad", "Kuzhuppilly", "Malayattoor", "Manakkapady", "Maneed", "Mannam", "Maradu", "Marine Drive, Kochi", "Maroor", "Maruthurkulangara", "Mattoor", "Mazhuvannoor", "Mulavukad", "Mulavukadu", "Mundamveli", "N. Paravur", "Nayarambalam", "Njarackal", "North Paravur", "Okkal", "Palarivattom", "Pallarimangalam", "Pallippuram, Ernakulam", "Pambakuda", "Panampilly Nagar", "Parakkadavu", "Paravur, Ernakulam", "Pattimattom", "Pazhanganad", "Petta", "Pindimana", "Piravom", "Ponnarimangalam", "Pothanikkad", "Puthenvelikkara", "Puthuvype", "Thiruvankulam", "Thrikkakara", "Thrippunithura", "Udayamperoor", "Uliyannoor", "Vadavucode", "Vaduthala", "Valakam", "Valanjambalam", "Vallarpadam", "Vazhakkala", "Vazhappilly", "Vazhakulam", "Vazhakkulam", "Vazhappily", "Vengola", "Vyttila"],
+                Thrissur:["Chalakudy", "Guruvayur", "Irinjalakuda", "Kodungallur", "Kunnamkulam", "Wadakkanchery", "Chavakkad", "Kodakara", "Kunnamkulam", "Mala", "Mulankunnathukavu", "Chalakudy", "Chavakkad", "Desamangalam", "Irinjalakuda", "Kanjani", "Karalam", "Kodakara", "Kodannur", "Kodungallur", "Kombodinjamakkal", "Kottappuram, Thrissur", "Kunnamkulam", "Kuruvilassery", "Mala", "Malakkappara", "Malakkappara", "Mulakunnathukavu", "Muthuvara", "Nadathara", "Nenmenikkara", "Nenmini", "Nirmala College", "Ollukkara", "Ollur", "Padiyur", "Pavaratty", "Pazhayannur", "Peramangalam", "Peringandoor", "Peringottukurissi", "Perumpilavu", "Pisharikkal", "Pudukad", "Pullu", "Puthukkad", "Thalore", "Thanniyam", "Thazhekkad", "Thiruvilwamala", "Thrissur", "Ullannur", "Vadakkancheri", "Varandarappilly", "Velappaya", "Vellangallur", "Vellangallur", "Vellattanjur", "Vellikulangara", "Venkitangu", "Vilvattom"],
+                Palakkad:["Palakkad", "Ottappalam", "Chittur", "Shoranur", "Mannarkkad", "Alathur", "Cherpulassery", "Pattambi", "Malampuzha", "Kuzhalmannam", "Kollengode", "Kongad", "Kadampazhipuram", "Kottayi", "Thiruvegappura", "Nellaya", "Karimpuzha", "Lakkidi", "Vadakkencherry", "Puthucode", "Vaniyamkulam", "Chullimada", "Vadakkekad", "Vadakkethara", "Ayiloor", "Parudur", "Mangalam Dam", "Puthuppariyaram", "Thenkurissi", "Nenmara", "Kizhakkancheri", "Kuzhalmannam", "Vallapuzha", "Puthunagaram", "Chalavara", "Kodumba", "Karimba", "Puthuppariyaram", "Eruthempathy", "Aliparamba", "Ariyur", "Alambady", "Kasaba", "Alathur", "Karukachal", "Kanjirapuzha", "Puthenpally", "Thachanatcavu", "Nenmara", "Mundur", "Kadambazhipuram", "Olavakkode", "Chulissery", "Pazhanji", "Karimba", "Mukkai", "Kunnathurpadi", "Kottappuram", "Pulappatta", "Puthenpally", "Chulissery", "Kalladikode", "Kalladikode"],
+                Malappuram:["Malappuram", "Manjeri", "Tirur", "Perinthalmanna", "Ponnani", "Nilambur", "Tanur", "Kottakkal", "Valanchery", "Parappanangadi", "Tirurangadi", "Vengara", "Edappal", "Chelari", "Kondotty", "Kuttippuram", "Othukkungal", "Kalady", "Anakkayam", "Thenhipalam", "Karulai", "Mankada", "Melattur", "Maranchery", "Purathur", "Trikkalangode", "Kadampuzha", "Chelambra", "Vadakkekad", "Mampad", "Edarikode", "Thirunavaya", "Vazhakkad", "Cherukavu", "Kalikavu", "Kavanur", "Valavannur", "Kodur", "Angadippuram", "Vazhayur", "Chaliyar", "Muthuvallur", "Koduvally", "Mannarkkad", "Chelembra", "Mavoor", "Thalakkad", "Mukkam", "Karakkunnu", "Nilambur", "Vazhikkadavu", "Perumpadappu", "Pookkottur", "Kilimanoor"],
+                Kozhikode:["Kozhikode", "Koyilandy", "Vadakara", "Nadapuram", "Perambra", "Koduvally", "Ramanattukara", "Kunnamangalam", "Feroke", "Kodanchery", "Thamarassery", "Balussery", "Koyilandy", "Thikkodi", "Chelannur", "Kakkodi", "Chorode", "Chathamangalam", "Perumanna", "Naduvannur", "Payyoli", "Koduvally", "Koorachundu", "Vatakara", "Kottur", "Elathur", "Perambra", "Mukkam", "Kuttiady", "Koduvally", "Villyappalli", "Villiappally", "Meppayur", "Kayanna", "Thiruvambady", "Kakkur", "Panniyankara", "Edachery", "Mukkom", "Thottumukkam", "Thiruvallur", "Thiruvambadi", "Chathamangalam", "Panniyankara", "Chathamangalam", "Kozhikode Medical College", "Mavoor Road", "Ramanattukara", "Chevayur", "Manassery", "Kuttiadi", "Feroke", "Beypore"],
+                Wayanad:["Kalpetta", "Mananthavady", "Sulthan Bathery", "Meppadi", "Vythiri", "Pulpally", "Panamaram", "Padinjarathara", "Kaniyambetta", "Thariyode", "Ambalavayal", "Muttil", "Kottathara", "Vellamunda", "Thalappuzha", "Muthanga", "Thavinhal", "Kavumannam"],
+                Kannur:["Kannur", "Thalassery", "Mattannur", "Koothuparamba", "Iritty", "Payyannur", "Panoor", "Kuthuparamba", "Peringathur", "Chakkarakkal", "Keezhallur", "Kottiyoor", "Thrippangottur", "Cherukunnu", "Pappinisseri", "Edakkad", "Thazhe Chovva", "Ulikkal", "Valapattanam", "Thaliparamba", "Muzhappilangad", "Kanhirode", "Pinarayi", "Kuppam", "New Mahe", "Chirakkal", "Kottayam-Malabar", "Kadachira", "Thillenkeri", "Kadirur", "Dharmadam", "Munderi", "Pathiriyad", "Mangattidam", "Kolachery", "Padiyur", "Kanichar", "Kannadiparamba", "Kunhimangalam", "Pallikunnu", "Pariyaram", "Thazhekode", "Cherukulamba", "Madayi", "Karinthalam", "Koothali", "Kankol", "Valapattanam", "Munderi", "Mangattidam", "Peravoor", "Pattuvam", "Ulikkal", "Kakkad", "Eramam", "Chengalayi", "Thimiri", "Madayi Para", "Iritty", "Payyavur", "Kalliad", "Nedumpoil", "Pazhassi", "Puthiyangadi", "Sreekandapuram", "Naduvil", "Keezhpally", "Muzhappilangad", "Kottiyoor", "Chengalayi", "Kuthuparamba", "Pinarayi", "Pathiriyad", "Munderi", "Kottayam-Malabar", "Pariyaram", "Cherupuzha", "Kankole", "Peravoor", "Valapattanam", "Nuchiyad", "Chapparappadavu", "Keezhpally", "Nedumpoil", "Sreekandapuram", "Paduvilayi", "Eramam-Kuttoor", "Anjarakandy", "Naduvil", "Cherupuzha", "Irikkur", "Panoor", "Pappinisseri", "Peringathur", "Cherukunnu", "Pattuvam", "Puthiyangadi", "Thaliparamba", "New Mahe"],
+                Kasaragod:["Kasaragod", "Kanhangad", "Nileshwar", "Manjeshwar", "Kumbala", "Cherkala", "Padannakkad", "Bekal", "Pallikere", "Chemnad", "Bandiyod", "Pilicode", "Uduma", "Muliyar", "Chittarikkal", "Bedadka", "Vellarikundu"]
+            };
+
+            // Get the city select element
+            const citySelect = document.getElementById("city");
+
+            // Clear previous options
+            citySelect.innerHTML = "<option value=''>Select City</option>";
+
+            // Add cities for the selected district
+            citiesBydistrict[district].forEach(city => {
+                const option = document.createElement("option");
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            });
+
+            // Show the city select group
+            document.getElementById("cityGroup").style.display = "block";
+        }
+
+        // Event listener for district select change
+        document.getElementById("district").addEventListener("change", function() {
+            const selecteddistrict = this.value;
+            if (selecteddistrict) {
+                fetchCities(selecteddistrict);
+            } else {
+                // Hide city select if no district is selected
+                document.getElementById("cityGroup").style.display = "none";
+            }
+        });
+        // Initialize map
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("jobForm").addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent form submission to check validation
+                
+                // Get the dates
+                var fromDate = new Date(document.getElementById("fromDate").value);
+                var toDate = new Date(document.getElementById("toDate").value);
+        
+                // Check if toDate is not less than fromDate
+                if (toDate < fromDate) {
+                    document.getElementById("dateError").innerHTML = "To Date should be greater than or equal to From Date";
+                    return; // Prevent form submission if validation fails
+                }
+        
+                // Check if the duration is within 12 months
+                var diffInMonths = (toDate.getFullYear() - fromDate.getFullYear()) * 12 + (toDate.getMonth() - fromDate.getMonth());
+                if (diffInMonths > 12) {
+                    document.getElementById("dateError").innerHTML = "Date duration should not exceed 12 months";
+                    return; // Prevent form submission if validation fails
+                }
+        
+                // If validation passes, submit the form
+                this.submit();
+            });
+        });
+    </script>
 </html>
 {% endblock content %}

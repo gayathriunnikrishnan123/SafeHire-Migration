@@ -129,11 +129,12 @@
         <h1>Agent Contact</h1>
     </header>
 
-    <div class="container"<body style="background-image: url('https://wallpapers.com/images/featured/minimalist-desktop-fpwai86ic8lh6trx.jpg'); background-size: cover; background-position: center;">
+    <div class="container"><body style="background-image: url('https://wallpapers.com/images/featured/minimalist-desktop-fpwai86ic8lh6trx.jpg'); background-size: cover; background-position: center;">
         <div class="agent-details">
             <h2>{{ agent.name }}</h2>
             <p>Contact: {{ agent.phone }}</p>
             <p>Email: {{ agent.email }}</p>
+      
         </div>
 
         <div class="worker-details">
@@ -141,13 +142,14 @@
             <p>Name: {{ worker.first_name }}</p>
             <p>Job Assigned: {{ worker.category }}</p>
             <div class="job-details">
-                {% if job %}
-                {% for jobs in job %}
+                {% if jobs %}
+                {% for job in jobs %}
                     <h2>Job Details</h2>
-                    <p>Title: {{jobs.title.name }}</p>
-                    <p>Work Type: {{ jobs.work_type }}</p>
-                    <p>Work Location: {{ jobs.work_location }}</p>
-                    <p>Duration: {{ jobs.duration }} months</p>
+                    <p>Job Title: {{ job.title }}</p>
+                    <p>Work Type: {{ job.work_type }}</p>
+                    <p>Duration: {{ job.from_date }} to {{ job.to_date }}</p>
+                    <p>District: {{ job.district }}</p>
+                    <p>City: {{ job.city }} </p>
                     
                     <form id="bookingForm" method="post" action="{% url 'book_worker' agent.id worker.id %}">
                         {% csrf_token %}

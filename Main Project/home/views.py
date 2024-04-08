@@ -199,7 +199,7 @@ def agent_profile(request):
 def worker_list(request):
     
     workers = MigratoryWorker.objects.filter( is_verified=True)
-       
+     
     context = {'workers': workers}
     return render(request, 'worker_list.html', context)
 
@@ -646,11 +646,15 @@ from .models import CustomUser, MigratoryWorker, JobSubmission
 
 
 def agent_contact(request, agent_id, worker_id):
-    agent = get_object_or_404(CustomUser, id=agent_id) 
-    worker = get_object_or_404(MigratoryWorker, id=worker_id)
-    assigned_job = JobSubmission.objects.filter(title=worker.category)  # Assuming each agent has only one job submission
     
-    context = {'agent': agent, 'worker': worker, 'job': assigned_job}
+    agent = get_object_or_404(CustomUser, id=agent_id)
+
+    worker = get_object_or_404(MigratoryWorker, id=worker_id)
+
+
+    assigned_job = JobSubmission.objects.filter(title=worker.category.id, employer=request.user)
+    
+    context = {'agent': agent, 'worker': worker, 'jobs': assigned_job}
     return render(request, 'agent_contact.html', context)
 
 
@@ -660,33 +664,37 @@ def agent_contact(request, agent_id, worker_id):
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import JobSubmission
 from .models import WorkCategory  # Import WorkCategory model if not imported already
+from .models import JobSubmission, WorkCategory, CustomUser, MigratoryWorker
 
 def works_available(request):
+    employer = request.user
+
     if request.method == 'POST':
         # Extract form data
         category_name = request.POST.get('jobTitle')
         work_type = request.POST.get('workType')
-        work_location = request.POST.get('workLocation')
-        duration = request.POST.get('duration')
-        qualification_required = request.POST.get('qualification')
-        employer = request.user  # Assuming employer is the logged-in user
+        from_date = request.POST.get('fromDate')
+        to_date = request.POST.get('toDate')
+        district = request.POST.get('district')  # Ensure correct district retrieval
+        city = request.POST.get('city')
         category = get_object_or_404(WorkCategory, name=category_name)
 
         # Create and save JobSubmission instance
         job_submission = JobSubmission(
-            title=category,  # Assign the WorkCategory instance to the title field
+            title=category,  # Assign the category object
             work_type=work_type,
-            work_location=work_location,
-            duration=duration,
-            qualification_required=qualification_required,
+            from_date=from_date,
+            to_date=to_date,
+            district=district,
+            city=city,
             employer=employer,
         )
         job_submission.save()
-        
+
         # Redirect to joblist view with employer ID
         return redirect('joblist', employer_id=employer.id)
 
-    return render(request, 'works_available.html', {'categories': WorkCategory.objects.all()})
+    return render(request, 'works_available.html', {'categories': WorkCategory.objects.all(),'employer':employer})
 
 
 
@@ -751,7 +759,7 @@ def setting(request):
 def book_worker(request, agent_id, worker_id):
     if request.method == 'POST':
        
-
+        jobid=request.POST.get('job_submission_id'),
         employer = request.user
         agent = CustomUser.objects.get(id=agent_id)  # Get the agent
         worker = MigratoryWorker.objects.get(id=worker_id)  # Get the worker
@@ -761,7 +769,7 @@ def book_worker(request, agent_id, worker_id):
             employer=employer,
             agent=agent,
             worker=worker,
-            job_submission_id=request.POST.get('job_submission_id'),
+            job_submission=jobid
            
         )
         worker.status="onduty"
@@ -790,13 +798,10 @@ def document_verification(request):
 
 
 def joblist(request, employer_id):
- # Replace EmployerModel with your actual employer model
-    
-    # Fetch jobs associated with the current employer
+   
     employer_jobs = JobSubmission.objects.filter(employer=employer_id)
 
-    # Pass the job list to the template for rendering
-    return render(request, 'joblist.html', {'jobs': employer_jobs})
+    return render(request, 'joblist.html', {'job_submissions': employer_jobs})
 
 def bookings(request, user_id):
 
@@ -862,3 +867,6 @@ def pay_salary(request, booking_id):
 
     booking = get_object_or_404(BookingWorkers, id=booking_id)
     return render(request, 'salary.html', {'booking': booking})
+
+
+

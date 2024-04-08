@@ -130,35 +130,24 @@ class Police(models.Model):
 
 
 
-
 class JobSubmission(models.Model):
     TYPE_CHOICES = [
         ('Full-time', 'Full-time'),
         ('Part-time', 'Part-time'),
         ('Contract', 'Contract'),
-        ('Freelance', 'Freelance'),
     ]
 
-    QUALIFICATION_CHOICES = [
-        ('High School', 'High School'),
-        ('Bachelor', 'Bachelor'),
-        ('Master', 'Master'),
-        ('PhD', 'PhD'),
-    ]
-
-    title = models.ForeignKey(WorkCategory, on_delete=models.CASCADE,blank=True, null=True)# Change to CharField to store category name
+    title = models.ForeignKey(WorkCategory, on_delete=models.CASCADE, blank=True, null=True)
     work_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
-    work_location = models.CharField(max_length=100)
-    duration = models.PositiveIntegerField(help_text='Duration in months')
-    qualification_required = models.CharField(max_length=20, choices=QUALIFICATION_CHOICES)
+    from_date = models.DateField(blank=True, null=True) 
+    to_date = models.DateField(blank=True, null=True) 
+    district = models.CharField(max_length=100) 
+    city = models.CharField(max_length=100)
     employer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
-    worker = models.ForeignKey(MigratoryWorker, on_delete=models.CASCADE,blank=True,null=True)
-    
+    worker = models.ForeignKey(MigratoryWorker, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"Job Submission - {self.title}"
-    
-
 
 from django.db import models
 from .models import CustomUser, MigratoryWorker, JobSubmission
