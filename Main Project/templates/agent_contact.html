@@ -154,7 +154,7 @@
                     <form id="bookingForm" method="post" action="{% url 'book_worker' agent.id worker.id %}">
                         {% csrf_token %}
                         <!-- Add form fields for booking details -->
-                        <input type="hidden" value="{{jobs.id}}" name="job_submission_id" id="job_submission_id">
+                        <input type="hidden" value={{ job.id }} name="job_submission_id" id="job_submission_id">
                         <button id="book" type="submit" {% if  jobs %}  >Book Worker</button>
                         {% endif %}
                     </form>

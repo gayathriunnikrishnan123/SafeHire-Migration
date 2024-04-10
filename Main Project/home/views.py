@@ -756,26 +756,28 @@ def setting(request):
 
 @never_cache
 @login_required(login_url='login')
+
 def book_worker(request, agent_id, worker_id):
     if request.method == 'POST':
-       
-        jobid=request.POST.get('job_submission_id'),
+        jobid = request.POST.get('job_submission_id')
+        print(jobid)
         employer = request.user
-        agent = CustomUser.objects.get(id=agent_id)  # Get the agent
-        worker = MigratoryWorker.objects.get(id=worker_id)  # Get the worker
-
+        agent = get_object_or_404(CustomUser, id=agent_id)  # Get the agent
+        worker = get_object_or_404(MigratoryWorker, id=worker_id)  # Get the worker
+        job_submission = get_object_or_404(JobSubmission, id=jobid)  # Get the job submission
+        
         # Create a booking record
         booking = BookingWorkers.objects.create(
             employer=employer,
             agent=agent,
             worker=worker,
-            job_submission=jobid
-           
+            job_submission=job_submission  # Assign the job submission instance
         )
-        worker.status="onduty"
-        worker.employer=employer
+        worker.status = "onduty"
+        worker.employer = employer
         worker.save()
         return redirect('agent_contact', agent_id=agent_id, worker_id=worker_id)
+
 
 def booking_workers_view(request, user_id):
     booking_workers = BookingWorkers.objects.filter(agent=user_id)
@@ -867,6 +869,8 @@ def pay_salary(request, booking_id):
 
     booking = get_object_or_404(BookingWorkers, id=booking_id)
     return render(request, 'salary.html', {'booking': booking})
+
+
 
 
 
