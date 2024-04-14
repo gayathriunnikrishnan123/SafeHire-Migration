@@ -714,17 +714,20 @@ def jobs(request):
  
 from django.shortcuts import render, redirect
 from .models import SalaryPayment
-
+from datetime import datetime
 def salary(request):
     if request.method == 'POST':
+        print("**********")
+        print("Incoming data:", request.POST)
         worker_name = request.POST.get('name')
-        amount = request.POST.get('amount')
-        payment_date = request.POST.get('paymentDate')
+        amount = 99
+        payment_date = datetime.now()
         card_holder_name = request.POST.get('card_name')
         card_number = request.POST.get('card_no')
         cvv = request.POST.get('cvv')
         payment_status = 'Completed'  # Assume payment is successful by default
-
+        print(amount)
+        print("************************************")
         # Create SalaryPayment instance
         salary_payment = SalaryPayment.objects.create(
             name=worker_name,  # Assuming 'worker_account' stores the worker name
