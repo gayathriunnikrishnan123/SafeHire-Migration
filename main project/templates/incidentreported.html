@@ -1,0 +1,64 @@
+{% extends "policepage.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1 class="mt-4 mb-4">Worker Reports</h1>
+        <div class="report-section">
+            <div class="report-item">
+                <h3>Total Workers Added</h3>
+                <p class="count">{{ total_added }}</p>
+            </div>
+            <div class="report-item">
+                <h3>Workers Verified</h3>
+                <p class="count">{{ total_verified }}</p>
+            </div>
+            <div class="report-item">
+                <h3>Workers Rejected</h3>
+                <p class="count">{{ total_rejected }}</p>
+            </div>
+        </div>
+    </div>
+</body>
+<style>
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Container Styles */
+    .container {
+        width: 80%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    /* Report Section Styles */
+    .report-section {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .report-item {
+        text-align: center;
+        margin: 20px;
+        padding: 20px;
+        background-color: #f2f2f2;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .count {
+        font-size: 36px;
+        font-weight: bold;
+    }
+</style>
+{% endblock content %}

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workers Listing</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+          }
+      
+          /* Table Styles */
+          .table {
+            width: 100%;
+          }
+      
+          .table th,
+          .table td {
+            text-align: left;
+            padding: 8px;
+          }
+      
+          .table th {
+            background-color: #
+      
+        color: #fff;
+      }
+      
+      .table tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+        .worker-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .worker-item {
+            background-color: #fff;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            margin: 10px 0;
+            padding: 20px;
+            border-radius: 5px;
+            width: calc(32% - 20px);
+            text-align: center;
+        }
+
+        .worker-item img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .worker-item h3 {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        .worker-item p {
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+  <header>
+    <h1>Workers Listing</h1>
+</header>
+
+<div class="container">
+    <h1 class="mt-4 mb-4">Verified Workers</h1>
+      <input type="text" id="searchInput" onkeyup="searchWorkers()" placeholder="Search for workers..." title="Type in a name">
+
+     
+    <table class="table" style="background-image: url('https://wallpapers.com/images/featured/minimalist-desktop-fpwai86ic8lh6trx.jpg');">
+    <thead>
+        <tr>
+            <th>Photo</th>
+            <th>Name</th>
+            <th>Date of Birth</th>
+            <th>Nationality</th>
+            <th>Contact Number</th>
+            <th>Adhar Number</th>
+            <th>Work Assigned</th>
+            <th>Status</th>
+            <th>Agent Contact</th>
+            <th>Work Permit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for worker in workers %}
+            {% if worker.is_verified %}
+                <tr>
+                    <td>
+                        {% if worker.profile_image %}
+                            <img src="{{ worker.profile_image.url }}" alt="{{ worker.first_name }}'s photo" style="max-width: 100px; max-height: 100px;">
+                        {% else %}
+                            No Profile
+                        {% endif %}
+                    </td>
+                    <td>{{ worker.first_name }}</td>
+                    <td>{{ worker.dob }}</td>
+                    <td>{{ worker.nationality }}</td>
+                    <td>{{ worker.contact_number }}</td>
+                    <td>{{ worker.adhar_number }}</td>
+                    <td>
+                        {% if worker.category %}
+                            {{ worker.category.name }}
+                        {% else %}
+                            No assigned work
+                        {% endif %}
+                    </td>
+                    <td>{{worker.status}}</td>
+                        <td>
+                            {% if worker.status != 'onduty' %}
+                                {% if worker.agent %}
+                                    <a href="{% url 'agent_contact' agent_id=worker.agent.id worker_id=worker.id %}" id="worker">{{ worker.agent.first_name }}Agent</a>
+                                {% else %}
+                                    No assigned agent
+                                {% endif %}
+                            {% else %}
+                                Worker on duty
+                            {% endif %}
+                        </td>
+                        
+                    <td>
+                        {% if worker.work_permit_verified %}
+                        <a href="{% url 'generate_work_permit_pdf' worker.id %}" class="btn btn-primary" download>Download Work Permit</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+        {% empty %}
+            <tr>
+                <td colspan="10">No registered workers yet.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</body>
+<script>
+  function searchWorkers() {
+      // Declare variables
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("searchInput");
+      filter = input.value.toUpperCase();
+      table = document.querySelector(".table");
+      tr = table.getElementsByTagName("tr");
+  
+      // Loop through all table rows and hide those that don't match the search query
+      for (i = 0; i < tr.length; i++) {
+          td = tr[i].getElementsByTagName("td");
+          for (var j = 0; j < td.length; j++) {
+              if (td[j]) {
+                  txtValue = td[j].textContent || td[j].innerText;
+                  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                      tr[i].style.display = "";
+                      break;
+                  } else {
+                      tr[i].style.display = "none";
+                  }
+              }
+          }
+      }
+  }
+  </script>
+  
+</html>

@@ -1,0 +1,65 @@
+{% extends "agentpage.html" %}
+{% block title %}Jobs{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h1>Submitted Jobs</h1>
+    <div class="job-list">
+        {% if submitted_jobs %}
+            <ul class="job-items">
+                {% for job in submitted_jobs %}
+                    <li class="job-item">
+                        <h4>Job title:{{ job.category }}</h4> <!-- Display category name -->
+                        <p>Type of Work: {{ job.work_type }}</p>
+                        <p>Work Location: {{ job.work_location }}</p>
+                        <p>Duration in months: {{ job.duration }}</p>
+                        <p>Qualification Required: {{ job.qualification_required }}</p>
+                        <p>Posted by: {{ job.employer.username }}</p> <!-- Display employer username -->
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No submitted jobs found.</p>
+        {% endif %}
+    </div>
+</div>
+<style>
+    /* Add this CSS to your stylesheet */
+.container {
+    margin: 20px;
+}
+
+.job-list {
+    margin-top: 20px;
+}
+
+.job-item {
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.job-item h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.job-item p {
+    margin: 10px 0;
+    color: #666;
+}
+
+.job-item p:first-child {
+    font-weight: bold;
+}
+
+.job-item p:last-child {
+    margin-bottom: 0;
+}
+
+</style>
+
+{% endblock content %}

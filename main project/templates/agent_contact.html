@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Contact</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .agent-details {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .agent-details img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 50%;
+        }
+
+        .agent-details h2 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .agent-details p {
+            color: #777;
+        }
+
+        .chat-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .chat-box textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 10px;
+            resize: none;
+        }
+
+        .chat-box button {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Modal Styles */
+        #bookingModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .modal-content {
+            text-align: center;
+        }
+
+        .modal-content label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .modal-content input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .modal-content select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .modal-content button {
+            width: 100%;
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body style="background-image: url('https://wallpapers.com/images/featured/minimalist-desktop-fpwai86ic8lh6trx.jpg'); background-size: cover; background-position: center;">
+    <header>
+        <h1>Agent Contact</h1>
+    </header>
+
+    <div class="container"><body style="background-image: url('https://wallpapers.com/images/featured/minimalist-desktop-fpwai86ic8lh6trx.jpg'); background-size: cover; background-position: center;">
+        <div class="agent-details">
+            <h2>{{ agent.name }}</h2>
+            <p>Contact: {{ agent.phone }}</p>
+            <p>Email: {{ agent.email }}</p>
+      
+        </div>
+
+        <div class="worker-details">
+            <h2>Worker Details</h2>
+            <p>Name: {{ worker.first_name }}</p>
+            <p>Job Assigned: {{ worker.category }}</p>
+            <div class="job-details">
+                {% if jobs %}
+                {% for job in jobs %}
+                    <h2>Job Details</h2>
+                    <p>Job Title: {{ job.title }}</p>
+                    <p>Work Type: {{ job.work_type }}</p>
+                    <p>Duration: {{ job.from_date }} to {{ job.to_date }}</p>
+                    <p>District: {{ job.district }}</p>
+                    <p>City: {{ job.city }} </p>
+                    
+                    <form id="bookingForm" method="post" action="{% url 'book_worker' agent.id worker.id %}">
+                        {% csrf_token %}
+                        <!-- Add form fields for booking details -->
+                        <input type="hidden" value={{ job.id }} name="job_submission_id" id="job_submission_id">
+                        <button id="book" type="submit" {% if  jobs %}  >Book Worker</button>
+                        {% endif %}
+                    </form>
+                {% endfor%}
+                {% else %}
+                    <p>No work submitted by the employer.</p>
+                {% endif %}
+            </div>
+            
+      
+
+    
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{% extends "adminpanel.html" %}
+{% block title %}Worker{% endblock %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Details</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            background-color: white;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Payment Details</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Worker</th>
+                <th>Amount</th>
+                <th>Payment Date</th>
+                <th>Employer Name</th>
+                <th>Payment Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.name }}</td>
+                <td>{{ payment.amount }}</td>
+                <td>{{ payment.payment_date }}</td>
+                <td>{{ payment.card_holder_name }}</td>
+                <td>{{ payment.payment_status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
+
+
+{% endblock content %}

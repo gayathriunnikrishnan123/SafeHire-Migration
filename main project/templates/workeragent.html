@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Profile</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Agent Profile</h1>
+        <div class="agent-details">
+            <p><strong>Agent Name:</strong> {{ agent.name }}</p>
+            <p><strong>Email:</strong> {{ agent.email }}</p>
+            <!-- Add more details as needed -->
+        </div>
+        <a href="{% url 'index' %}" class="btn btn-secondary">Back to Home</a>
+    </div>
+</body>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        text-decoration: none;
+        background-color: #007bff;
+        color: #fff;
+        border-radius: 4px;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+    }
+    
+    .agent-details {
+        margin-top: 20px;
+    }
+    
+</style>
+</html>
