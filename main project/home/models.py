@@ -159,7 +159,7 @@ class BookingWorkers(models.Model):
     job_submission = models.ForeignKey(JobSubmission, on_delete=models.CASCADE, related_name='booking_workers', null=True, blank=True)
     date_requested = models.DateTimeField(auto_now_add=True)
     is_accepted = models.BooleanField(default=False)
-    is_rejected = models.BooleanField(default=False)
+    status = models.CharField(max_length=20,blank=True, null=True )
     
 
     def __str__(self):
@@ -170,11 +170,11 @@ class BookingWorkers(models.Model):
 
 
 class SalaryPayment(models.Model):
-    worker = models.ForeignKey(MigratoryWorker, on_delete=models.CASCADE,blank=True,null=True)
+    worker = models.ForeignKey(MigratoryWorker, on_delete=models.CASCADE)
     name = models.CharField(max_length=100,blank=True,null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateField()
-    card_holder_name = models.CharField(max_length=100)
+    card_holder_name = models.CharField(max_length=100,blank=True,null=True)
     card_number = models.CharField(max_length=16)
     cvv = models.CharField(max_length=3)
     payment_status = models.CharField(max_length=20, choices=[

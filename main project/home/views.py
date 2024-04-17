@@ -717,29 +717,38 @@ from .models import SalaryPayment
 from datetime import datetime
 def salary(request):
     if request.method == 'POST':
-        print("**********")
-        print("Incoming data:", request.POST)
+        # Retrieve data from the POST request
         worker_name = request.POST.get('name')
-        amount = 99
+        worker_id = request.POST.get('id')
+        amount = request.POST.get('amount')
+        worker = get_object_or_404(MigratoryWorker, id=worker_id)
+        worker.status=None
+        worker.save()
         payment_date = datetime.now()
         card_holder_name = request.POST.get('card_name')
         card_number = request.POST.get('card_no')
         cvv = request.POST.get('cvv')
         payment_status = 'Completed'  # Assume payment is successful by default
-        print(amount)
-        print("************************************")
+
         # Create SalaryPayment instance
         salary_payment = SalaryPayment.objects.create(
-            name=worker_name,  # Assuming 'worker_account' stores the worker name
+            name=worker_name,
             amount=amount,
             payment_date=payment_date,
             card_holder_name=card_holder_name,
             card_number=card_number,
             cvv=cvv,
-            payment_status=payment_status
+            payment_status=payment_status,
+            worker=worker
         )
 
-        return redirect('salary')  # Render success page
+        # Update the status of the corresponding BookingWorker object
+        booking_worker = BookingWorkers.objects.exclude(worker=worker, status='Paid').first()
+
+        booking_worker.status = 'Paid'
+        booking_worker.save()
+
+        return redirect('salary')  # Redirect to a success page or another URL
 
     return render(request, 'salary.html')
 
@@ -809,9 +818,8 @@ def joblist(request, employer_id):
     return render(request, 'joblist.html', {'job_submissions': employer_jobs})
 
 def bookings(request, user_id):
-
-    # Filter bookings based on the employer
-    bookings = BookingWorkers.objects.filter(employer=user_id)
+    # Filter bookings based on the employer and where the status is not 'Paid'
+    bookings = BookingWorkers.objects.filter(employer=user_id).exclude(status='Paid')
 
     return render(request, 'bookings.html', {'bookings': bookings})
 
@@ -869,11 +877,21 @@ def bookings(request, user_id):
 
 
 def pay_salary(request, booking_id):
-
     booking = get_object_or_404(BookingWorkers, id=booking_id)
-    return render(request, 'salary.html', {'booking': booking})
+    
+    # Check if the status is not 'Paid'
+    if booking.status != 'Paid':
+        return render(request, 'salary.html', {'booking': booking})
+    else:
+        return render(request, 'bookings.html')
+        
 
 
+def worker_tracked(request):
 
+    # Filter bookings based on the employer
+    bookings = BookingWorkers.objects.all()
+    print(bookings)
+    return render(request, 'worker_tracked.html', {'bookings': bookings})
 
 

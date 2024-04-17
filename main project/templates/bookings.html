@@ -101,7 +101,11 @@
                 </div>
                 <form class="pay-salary-form" action="{% url 'pay_salary' booking.id %}" method="POST">
                     {% csrf_token %}
-                    <button class="pay-salary-btn" type="submit">Pay Salary</button>
+                    {% if booking.status == 'Paid' %}
+                        <button class="pay-salary-btn" type="button" disabled>Payment Completed</button>
+                    {% else %}
+                        <button class="pay-salary-btn" type="submit">Pay Salary</button>
+                    {% endif %}
                 </form>
             </li>
         {% empty %}

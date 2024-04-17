@@ -64,6 +64,7 @@ urlpatterns = [
     path('bookings/<int:user_id>/', views.bookings, name='bookings'),
     path('pay_salary/<int:booking_id>/', views.pay_salary, name='pay_salary'),
     path('notifications/<int:user_id>/', views.booking_workers_view, name='notification_view'),
+    path('worker_tracked/', views.worker_tracked, name='worker_tracked'),
 
 
 ]
