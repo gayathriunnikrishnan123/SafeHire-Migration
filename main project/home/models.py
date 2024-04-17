@@ -145,7 +145,7 @@ class JobSubmission(models.Model):
     city = models.CharField(max_length=100)
     employer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
     worker = models.ForeignKey(MigratoryWorker, on_delete=models.CASCADE, blank=True, null=True)
-
+    is_booked=models.BooleanField(default=False,blank=True, null=True)
     def __str__(self):
         return f"Job Submission - {self.title}"
 

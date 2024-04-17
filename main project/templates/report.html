@@ -1,0 +1,16 @@
+{% extends "adminpanel.html" %}
+{% block title %}Worker{% endblock %}
+{% block content %}
+<html>
+<body>
+    <div class="mt-4">
+        <a href="{% url 'generate_report_worker' %}" class="btn btn-primary">Generate Worker Report</a>
+    </div>
+    <div class="mt-4">
+        <a href="{% url 'generate_report_booking' %}" class="btn btn-primary">Generate Booking Report</a>
+    </div>
+</body>
+</html>
+
+
+{% endblock content %}

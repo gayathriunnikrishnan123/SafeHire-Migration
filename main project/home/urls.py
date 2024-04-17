@@ -65,6 +65,9 @@ urlpatterns = [
     path('pay_salary/<int:booking_id>/', views.pay_salary, name='pay_salary'),
     path('notifications/<int:user_id>/', views.booking_workers_view, name='notification_view'),
     path('worker_tracked/', views.worker_tracked, name='worker_tracked'),
+    path('generate_report_worker/', views.generate_report_worker, name='generate_report_worker'),
+    path('generate_report_booking/', views.generate_report_booking, name='generate_report_booking'),
+    path('report/', views.report, name='report'),
 
 
 ]

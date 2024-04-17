@@ -650,9 +650,10 @@ def agent_contact(request, agent_id, worker_id):
     agent = get_object_or_404(CustomUser, id=agent_id)
 
     worker = get_object_or_404(MigratoryWorker, id=worker_id)
+    print(agent)
+    print(worker)
 
-
-    assigned_job = JobSubmission.objects.filter(title=worker.category.id, employer=request.user)
+    assigned_job = JobSubmission.objects.filter(title=worker.category.id, employer=request.user, is_booked=False)
     
     context = {'agent': agent, 'worker': worker, 'jobs': assigned_job}
     return render(request, 'agent_contact.html', context)
@@ -747,7 +748,11 @@ def salary(request):
 
         booking_worker.status = 'Paid'
         booking_worker.save()
+        # j = JobSubmission.objects.get(id=booking.job_submission)
 
+        # j.delete()
+
+        # j.save()
         return redirect('salary')  # Redirect to a success page or another URL
 
     return render(request, 'salary.html')
@@ -765,7 +770,7 @@ def setting(request):
     payments = SalaryPayment.objects.all()
     return render(request, 'setting.html', {'payments': payments})
 
-
+from django.contrib import messages
 @never_cache
 @login_required(login_url='login')
 
@@ -777,7 +782,9 @@ def book_worker(request, agent_id, worker_id):
         agent = get_object_or_404(CustomUser, id=agent_id)  # Get the agent
         worker = get_object_or_404(MigratoryWorker, id=worker_id)  # Get the worker
         job_submission = get_object_or_404(JobSubmission, id=jobid)  # Get the job submission
-        
+        if BookingWorkers.objects.filter(employer=employer,agent=agent,worker=worker,job_submission=job_submission).exists():
+            return redirect('agent_contact', agent_id=agent_id, worker_id=worker_id)
+            
         # Create a booking record
         booking = BookingWorkers.objects.create(
             employer=employer,
@@ -788,6 +795,11 @@ def book_worker(request, agent_id, worker_id):
         worker.status = "onduty"
         worker.employer = employer
         worker.save()
+        job_submission.is_booked=True
+        job_submission.worker=worker
+        job_submission.save()
+        print(job_submission.__dict__)
+        print(job_submission.worker)
         return redirect('agent_contact', agent_id=agent_id, worker_id=worker_id)
 
 
@@ -813,7 +825,7 @@ def document_verification(request):
 
 def joblist(request, employer_id):
    
-    employer_jobs = JobSubmission.objects.filter(employer=employer_id)
+    employer_jobs = JobSubmission.objects.filter(employer=employer_id, is_booked=False)
 
     return render(request, 'joblist.html', {'job_submissions': employer_jobs})
 
@@ -878,8 +890,8 @@ def bookings(request, user_id):
 
 def pay_salary(request, booking_id):
     booking = get_object_or_404(BookingWorkers, id=booking_id)
+    print(booking.__dict__)
     
-    # Check if the status is not 'Paid'
     if booking.status != 'Paid':
         return render(request, 'salary.html', {'booking': booking})
     else:
@@ -890,8 +902,139 @@ def pay_salary(request, booking_id):
 def worker_tracked(request):
 
     # Filter bookings based on the employer
-    bookings = BookingWorkers.objects.all()
+    bookings = BookingWorkers.objects.exclude(status ='Paid')
     print(bookings)
     return render(request, 'worker_tracked.html', {'bookings': bookings})
 
 
+from django.shortcuts import render
+from django.http import HttpResponse
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+from .models import MigratoryWorker
+
+def generate_report_worker(request):
+    # Fetch data from the MigratoryWorker model
+    workers = MigratoryWorker.objects.all()
+
+    # Create a list to hold the data for the PDF table
+    data = [['Worker Name', 'Gender', 'Nationality', 'Verified by Police', 'Rejected', 'Agent']]
+
+    # Populate the data list with worker details
+    for worker in workers:
+        # Check if the worker is verified by police
+        police_verification = 'Yes' if worker.work_permit_verified else 'No'
+        # Check if the worker is rejected
+        rejected_status = 'Yes' if worker.is_rejected else 'No'
+        # Get the agent's name
+        agent_name = worker.agent.username if worker.agent else 'N/A'
+
+        data.append([
+            worker.first_name,
+            worker.gender,
+            worker.nationality,
+            police_verification,
+            rejected_status,
+            agent_name
+        ])
+
+    # Create a PDF document
+    pdf_buffer = HttpResponse(content_type='application/pdf')
+    pdf_buffer['Content-Disposition'] = 'attachment; filename="worker_report.pdf"'
+    doc = SimpleDocTemplate(pdf_buffer, pagesize=letter)
+
+    # Define styles
+    styles = getSampleStyleSheet()
+    heading_style = styles['Heading1']
+
+    # Add heading
+    heading = Paragraph("Report on Migratory Workers", heading_style)
+
+    # Add heading to the PDF
+    elements = [heading]
+
+    # Create a table and set its style
+    table = Table(data)
+    style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                        ('GRID', (0, 0), (-1, -1), 1, colors.black)])
+
+    table.setStyle(style)
+    elements.append(table)
+
+    # Add the elements to the PDF document
+    doc.build(elements)
+
+    return pdf_buffer
+
+
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+
+def generate_report_booking(request):
+    # Fetch data from the BookingWorkers model
+    bookings = BookingWorkers.objects.all()
+
+    # Create a list to hold the data for the PDF table
+    data = [['Booking ID', 'Employer', 'Agent', 'Worker', 'Payment Status']]
+    # Populate the data list with booking details
+    for booking in bookings:
+        # Get payment status
+        status = booking.status if hasattr(booking, 'status') else 'N/A'
+
+        data.append([
+            booking.id,
+            booking.employer.username if booking.employer else 'N/A',
+            booking.agent.username if booking.agent else 'N/A',
+            booking.worker.first_name if booking.worker else 'N/A',
+            booking.status
+        ])
+
+    # Create a PDF document
+    pdf_buffer = HttpResponse(content_type='application/pdf')
+    pdf_buffer['Content-Disposition'] = 'attachment; filename="booking_report.pdf"'
+    doc = SimpleDocTemplate(pdf_buffer, pagesize=letter)
+
+    styles = getSampleStyleSheet()
+    heading_style = styles['Heading1']
+
+    # Add heading
+    heading = Paragraph("Report on Booked Workers", heading_style)
+
+    # Add heading to the PDF
+    elements = [heading]
+
+    # Create a table and set its style
+    table = Table(data)
+    style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                        ('GRID', (0, 0), (-1, -1), 1, colors.black)])
+
+    table.setStyle(style)
+
+    # Add the table to the PDF document
+    elements.append(table)  # Append the table after the heading
+    doc.build(elements)
+
+    return pdf_buffer
+
+
+
+def report(request):
+    generate_report_booking=True
+    generate_report_worker=True
+    return render(request,'report.html')
